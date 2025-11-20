@@ -113,7 +113,7 @@ const SplashScreen = () => {
       
       // 4. Navigate to Onboarding
       // Make sure your onboarding file is named 'onboarding.tsx' inside the 'app' folder
-      router.replace('/Onboarding/index');
+      router.replace('/Onboarding');
  
       
     }, 4000); // 4000 milliseconds = 4 Seconds
