@@ -1,4 +1,6 @@
 import React from 'react';
+import { router } from 'expo-router';
+
 import { 
   View, 
   Text, 
@@ -147,18 +149,19 @@ const ChooseAccountScreen = (): React.JSX.Element => {
             {index > 0 && <View style={styles.divider} />}
             
             <TouchableOpacity 
-              style={styles.accountItem} 
-              onPress={() => handleAccountSelect(account)}
-            >
-              {renderAccountAvatar(account)}
-              <View style={styles.accountInfo}>
-                {/* Account Name (in bold) and Email */}
-                {account.name && (
-                  <Text style={styles.accountName}>{account.name}</Text>
-                )}
-                <Text style={styles.accountEmail}>{account.email}</Text>
-              </View>
-            </TouchableOpacity>
+  style={styles.accountItem} 
+  onPress={() => router.replace('/Feedbacks/SuccsessSignup')}
+>
+  {renderAccountAvatar(account)}
+
+  <View style={styles.accountInfo}>
+    {account.name && (
+      <Text style={styles.accountName}>{account.name}</Text>
+    )}
+    <Text style={styles.accountEmail}>{account.email}</Text>
+  </View>
+</TouchableOpacity>
+
           </React.Fragment>
         ))}
 
