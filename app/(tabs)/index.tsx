@@ -120,7 +120,9 @@ const SplashScreen = () => {
 
     // Cleanup the timer if the user closes the app before 4 seconds
     return () => clearTimeout(timer);
-  }, []);
+  }
+  
+  , []);
 
   return (
     <SafeAreaView style={styles.container}>

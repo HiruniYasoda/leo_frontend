@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import { router } from 'expo-router';
 import { 
   View, 
   Text, 
@@ -46,8 +47,8 @@ const SuccessScreen = ({ /* navigateToHome */ }: SuccessScreenProps): React.JSX.
   // Simulate automatic navigation after a delay
   useEffect(() => {
     const timer = setTimeout(() => {
-      console.log("Verification complete. Navigating to the home screen...");
-      // In a real app, you would call navigateToHome() or similar navigation logic here
+     router.replace('../Profile/profile.tsx'); // Navigate to Profile screen after delay
+      
     }, 3000); // 3 seconds delay
 
     return () => clearTimeout(timer); // Cleanup the timer
