@@ -1,4 +1,5 @@
 import React from 'react';
+import { router } from 'expo-router';
 import { 
   View, 
   Text, 
@@ -95,6 +96,15 @@ const BADGES_DATA: Badge[] = [
 
 const ProfileScreen = (): React.JSX.Element => {
     
+    // Function to handle the navigation to the customization screen
+    // The route name is now a placeholder for 'EditProfile'
+    const handleEditPress = () => {
+        console.log('Navigating to EditProfile screen.');
+       
+        // In a real application with React Navigation, this would look like:
+        // navigation.navigate('EditProfile'); 
+    };
+
     const renderBadge = (badge: Badge) => (
         <View style={styles.badgeItem} key={badge.id}>
             <Image 
@@ -143,8 +153,12 @@ const ProfileScreen = (): React.JSX.Element => {
                                 {/* Second Line Name (Lighter Weight) */}
                                 <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                                     <Text style={styles.nameTextSecondary}>{USER_DATA.lastName}</Text>
-                                    {/* Edit Icon (White on dark background) */}
-                                    <MaterialCommunityIcons name="pencil" size={16} color={COLORS.lightText} style={styles.editIcon} />
+                                    {/* Edit Icon wrapped in TouchableOpacity for navigation */}
+                                    <TouchableOpacity onPress={handleEditPress}> 
+                                        <MaterialCommunityIcons name="pencil" size={16} color={COLORS.lightText} style={styles.editIcon} 
+                                         onPress={() => router.replace('/Profile/ProfileCustermization')}/>
+                                        
+                                    </TouchableOpacity>
                                 </View>
                             </View>
 
