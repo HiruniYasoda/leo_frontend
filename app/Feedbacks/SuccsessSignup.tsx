@@ -47,7 +47,7 @@ const SuccessScreen = ({ /* navigateToHome */ }: SuccessScreenProps): React.JSX.
   // Simulate automatic navigation after a delay
   useEffect(() => {
     const timer = setTimeout(() => {
-     router.replace('../Profile/profile.tsx'); // Navigate to Profile screen after delay
+     router.replace('../Feeds/NationalFeed'); // Navigate to Profile screen after delay
       
     }, 3000); // 3 seconds delay
 
