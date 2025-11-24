@@ -1,56 +1,55 @@
+// components/NotificationCard.tsx
 import React from 'react';
-// ✅ Correct for React Native
-import { CheckSquare, Lock, Crown, Bell } from 'lucide-react-native';
+import { Pressable, View, Text } from 'react-native';
 
-// Define the structure for a single notification item
 export interface NotificationItem {
-  id: string; // Document ID
+  id: string;
   type: 'success' | 'info' | 'badge' | 'reminder';
   title: string;
   content: string;
-  timestamp: Date; // Firestore Timestamp converted to Date
+  description: string;
+  timestamp: Date;
   isRead: boolean;
 }
 
-// Define the icon, color, and emoji based on the notification type
+// Metadata for icons/emojis
 const getNotificationMetadata = (type: NotificationItem['type']) => {
   switch (type) {
-    case 'success':
-      return { Icon: CheckSquare, iconColor: '#10B981', emoji: '✅' }; // Emerald 500
-    case 'info':
-      return { Icon: Lock, iconColor: '#F59E0B', emoji: '🔒' }; // Amber 500
-    case 'badge':
-      return { Icon: Crown, iconColor: '#FBBF24', emoji: '🏆' }; // Amber 400
-    case 'reminder':
-      return { Icon: Bell, iconColor: '#6B7280', emoji: '🔔' }; // Gray 500
-    default:
-      return { Icon: Bell, iconColor: '#6B7280', emoji: 'ℹ️' };
+    case 'success': return { emoji: '✅' };
+    case 'info': return { emoji: '🔒' };
+    case 'badge': return { emoji: '🏆' };
+    case 'reminder': return { emoji: '🔔' };
+    default: return { emoji: 'ℹ️' };
   }
 };
 
 interface NotificationCardProps {
-  notification: NotificationItem;
+  notification: NotificationItem | undefined;
   onPress: (id: string) => void;
 }
 
-/**
- * Renders a single, styled notification card with the LeoConnect theme.
- * Features: Yellow outline, shadow effect, title, content, and an icon/emoji.
- */
 const NotificationCard: React.FC<NotificationCardProps> = ({ notification, onPress }) => {
+  console.log('NotificationCard received notification:', notification);  // Debugging log (remove after fixing)
+
+  // Robust check: Ensure notification is a valid object with an 'id'
+  if (!notification || typeof notification !== 'object' || !notification.id) {
+    console.warn("⚠️ NotificationCard received invalid or incomplete notification:", notification);
+    return null;
+  }
+
+  // Safe to destructure now
   const { id, title, content, type, isRead, timestamp } = notification;
   const { emoji } = getNotificationMetadata(type);
-  
-  // Styling constants for consistency with your LeoConnect theme
+
   const ACCENT_YELLOW = '#FFC72C';
-  const PRIMARY_TEXT = '#1F2937'; // Gray 800
-  const SECONDARY_TEXT = '#4B5563'; // Gray 600
-  
-  // Format the timestamp to a friendly string (e.g., "1 hour ago")
-  const formatTimeAgo = (date: Date): string => {
+  const PRIMARY_TEXT = '#1F2937';
+  const SECONDARY_TEXT = '#4B5563';
+
+  // Time formatting
+  const formatTimeAgo = (date: Date) => {
     const seconds = Math.floor((new Date().getTime() - date.getTime()) / 1000);
     let interval = seconds / 31536000;
-    
+
     if (interval > 1) return Math.floor(interval) + " years ago";
     interval = seconds / 2592000;
     if (interval > 1) return Math.floor(interval) + " months ago";
@@ -64,51 +63,66 @@ const NotificationCard: React.FC<NotificationCardProps> = ({ notification, onPre
   };
 
   return (
-    <button
-      onClick={() => onPress(id)}
-      className="w-full text-left focus:outline-none transition-transform duration-200 active:scale-[0.99] group"
+    <Pressable
+      onPress={() => onPress(id)}
+      style={{
+        width: "100%",
+        transform: [{ scale: 1 }],
+      }}
+      android_ripple={{ color: "#ddd" }}
     >
-      <div 
-        className={`
-          bg-white 
-          rounded-xl 
-          p-4 
-          mx-auto 
-          my-3 
-          shadow-md
-          ${isRead ? 'opacity-80' : 'shadow-lg'}
-        `}
+      <View
         style={{
-          // Mimicking the yellow outline (border-2) and subtle shadow effect
-          border: `2px solid ${ACCENT_YELLOW}`,
-          boxShadow: '0 4px 12px rgba(0, 0, 0, 0.08), 0 0 0 1px rgba(255, 199, 44, 0.5)', 
-          maxWidth: '450px',
+          backgroundColor: "white",
+          borderRadius: 12,
+          padding: 16,
+          marginVertical: 12,
+          marginHorizontal: "auto",
+          borderWidth: 2,
+          borderColor: ACCENT_YELLOW,
+          shadowColor: "#000",
+          shadowOpacity: 0.08,
+          shadowRadius: 12,
+          maxWidth: 450,
+          opacity: isRead ? 0.8 : 1,
         }}
       >
-        <div className="flex justify-between items-center mb-1">
-          {/* Notification Header: Emoji and Title */}
-          <div className="flex items-center flex-1 min-w-0">
-            <span className="text-xl mr-2">{emoji}</span>
-            <h3 className="text-base font-bold truncate" style={{ color: PRIMARY_TEXT }}>
+        {/* Header */}
+        <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: 4 }}>
+          <View style={{ flexDirection: "row", alignItems: "center", flex: 1, minWidth: 0 }}>
+            <Text style={{ fontSize: 20, marginRight: 8 }}>{emoji}</Text>
+
+            <Text
+              numberOfLines={1}
+              style={{ fontSize: 16, fontWeight: "bold", color: PRIMARY_TEXT }}
+            >
               {title}
-            </h3>
-          </div>
-          
-          {/* Unread Indicator */}
+            </Text>
+          </View>
+
           {!isRead && (
-            <div className="w-2 h-2 rounded-full bg-red-500 ml-2 animate-pulse" title="Unread"></div>
+            <View
+              style={{
+                width: 8,
+                height: 8,
+                borderRadius: 4,
+                backgroundColor: "red",
+              }}
+            />
           )}
-        </div>
-        
-        {/* Content and Timestamp */}
-        <p className="text-sm mt-1 leading-snug" style={{ color: SECONDARY_TEXT }}>
+        </View>
+
+        {/* Content Preview */}
+        <Text style={{ fontSize: 14, marginTop: 4, color: SECONDARY_TEXT }}>
           {content}
-        </p>
-        <p className="text-xs mt-2 font-medium" style={{ color: SECONDARY_TEXT }}>
-            {formatTimeAgo(timestamp)}
-        </p>
-      </div>
-    </button>
+        </Text>
+
+        {/* Timestamp */}
+        <Text style={{ fontSize: 12, marginTop: 8, color: SECONDARY_TEXT }}>
+          {formatTimeAgo(timestamp)}
+        </Text>
+      </View>
+    </Pressable>
   );
 };
 
