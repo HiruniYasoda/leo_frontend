@@ -1,135 +1,127 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { router } from 'expo-router';
-import { 
-  View, 
-  Text, 
-  StyleSheet, 
-  Image, 
-  StatusBar,
-  ViewStyle, 
-  TextStyle,
-  ImageStyle,
+import {
+    View,
+    Text,
+    StyleSheet,
+    TouchableOpacity,
+    StatusBar,
+    SafeAreaView,
 } from 'react-native';
-// Since the background is now solid white, LinearGradient is replaced with a simple View
-// import { LinearGradient } from 'expo-linear-gradient'; // <-- Removed
+import { Ionicons } from '@expo/vector-icons';
 
-// Asset Imports
-// Assuming GreenTick.png is a static local asset
-const greenTickIcon = require('../../assets/GreenTick.png'); 
-
-// --- Color Constants ---
 const COLORS = {
-  // CORRECTED COLORS for White Background Screen:
-  black: '#000000', // Used for main text
-  white: '#FFFFFF', // Used for screen background
-  greenSuccess: '#4CAF50', // Standard green for the checkmark
-  greyText: '#707070', // Used for secondary and footer text
-  // The goldMid and black/white constants from your previous code are adjusted or replaced for clarity
+    black: '#000000',
+    white: '#FFFFFF',
+    goldMid: '#FFC72C',
+    darkText: '#000000',
+    greyText: '#666666',
+    successGreen: '#2E7D32',
 };
 
-// --- Type Definitions ---
-interface Style {
-  container: ViewStyle;
-  content: ViewStyle;
-  tickIcon: ImageStyle;
-  headerMain: TextStyle;
-  headerSub: TextStyle;
-  footerText: TextStyle;
+export default function EventRegVerificationScreen() {
+    const handleViewMyEvents = () => {
+        console.log('Navigate to My Events');
+        // Navigate to My Events tab in Event screen
+        router.push('/customScreens/Event');
+    };
+
+    return (
+        <SafeAreaView style={styles.container}>
+            <StatusBar barStyle="dark-content" backgroundColor={COLORS.white} />
+
+            {/* Back Button */}
+            <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
+                <Ionicons name="arrow-back" size={28} color={COLORS.goldMid} />
+            </TouchableOpacity>
+
+            <View style={styles.content}>
+                {/* Success Icon */}
+                <View style={styles.successIconContainer}>
+                    <View style={styles.successCircle}>
+                        <Ionicons name="checkmark" size={100} color={COLORS.white} />
+                    </View>
+                </View>
+
+                {/* Success Message */}
+                <Text style={styles.congratsText}>Congratulations !!</Text>
+                <Text style={styles.successText}>Event Registration successful !</Text>
+
+                {/* Info Message */}
+                <Text style={styles.infoText}>
+                    You'll receive reminders and{'\n'}updates before the event date.
+                </Text>
+
+                {/* View My Events Button */}
+                <TouchableOpacity style={styles.viewEventsButton} onPress={handleViewMyEvents}>
+                    <Text style={styles.viewEventsText}>View My Events</Text>
+                </TouchableOpacity>
+            </View>
+        </SafeAreaView>
+    );
 }
 
-// Define props for navigation if it were a real screen
-interface SuccessScreenProps {
-  // Example: navigateToHome: () => void;
-}
-
-const SuccessScreen = ({ /* navigateToHome */ }: SuccessScreenProps): React.JSX.Element => {
-
-  // Simulate automatic navigation after a delay
-  useEffect(() => {
-    const timer = setTimeout(() => {
-     router.replace('../Profile/profile.tsx'); // Navigate to Profile screen after delay
-      
-    }, 3000); // 3 seconds delay
-
-    return () => clearTimeout(timer); // Cleanup the timer
-  }, [/* navigateToHome */]);
-
-  return (
-    // Replaced LinearGradient with a simple View for the solid white background
-    <View style={styles.container}>
-      {/* Status bar is now dark-content to be visible on a white background */}
-      <StatusBar barStyle="dark-content" backgroundColor={COLORS.white} />
-
-      {/* Main Content Area */}
-      <View style={styles.content}>
-        
-        {/* Verification Icon */}
-        <Image 
-          source={greenTickIcon} 
-          style={styles.tickIcon} 
-          resizeMode="contain" 
-        />
-        
-        {/* Header Text */}
-        <Text style={styles.headerMain}>
-          Congratilations !
-        </Text>
-        <Text style={styles.headerSub}>
-         Event Registration successful ! 
-        </Text>
-
-      </View>
-      
-      {/* Footer Text for Security */}
-      <Text style={styles.footerText}>
-        You’ll receive reminders and  {'\n'}updates before the event date
-      </Text>
-
-      <View style={{ height: 40 }} /> {/* Bottom padding */}
-    </View>
-  );
-};
-
-// --- Styles ---
-const styles = StyleSheet.create<Style>({
-  container: {
-    flex: 1,
-    backgroundColor: COLORS.white, // Set the background to white
-  },
-  content: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingHorizontal: 30,
-    marginTop: -80, // Keep content slightly up for better vertical balance
-  },
-  tickIcon: {
-    width: 128, // Using the dimension shown in the image (128x128)
-    height: 128,
-    marginBottom: 40,
-  },
-  headerMain: {
-    color: COLORS.black, // Changed to black text
-    fontSize: 22,
-    fontWeight: 'bold',
-    marginBottom: 10,
-    textAlign: 'center',
-  },
-  headerSub: {
-    color: COLORS.black, // Changed to black text
-    fontSize: 18,
-    fontWeight: '400',
-    textAlign: 'center',
-    lineHeight: 28,
-  },
-  footerText: {
-    color: COLORS.greyText, // Using the defined grey
-    fontSize: 14,
-    fontWeight: '400',
-    textAlign: 'center',
-    paddingHorizontal: 40,
-    lineHeight: 22,
-  },
-} as const);
-
-export default SuccessScreen;
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: COLORS.white,
+    },
+    backButton: {
+        paddingLeft: 20,
+        paddingTop: 20,
+        paddingBottom: 20,
+    },
+    content: {
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'center',
+        paddingHorizontal: 40,
+    },
+    successIconContainer: {
+        marginBottom: 40,
+    },
+    successCircle: {
+        width: 160,
+        height: 160,
+        borderRadius: 80,
+        backgroundColor: COLORS.successGreen,
+        justifyContent: 'center',
+        alignItems: 'center',
+        shadowColor: COLORS.black,
+        shadowOffset: { width: 0, height: 4 },
+        shadowOpacity: 0.2,
+        shadowRadius: 8,
+        elevation: 8,
+    },
+    congratsText: {
+        fontSize: 26,
+        fontWeight: '700',
+        color: COLORS.darkText,
+        marginBottom: 8,
+        textAlign: 'center',
+    },
+    successText: {
+        fontSize: 18,
+        fontWeight: '600',
+        color: COLORS.darkText,
+        marginBottom: 40,
+        textAlign: 'center',
+    },
+    infoText: {
+        fontSize: 15,
+        color: COLORS.greyText,
+        marginBottom: 60,
+        textAlign: 'center',
+        lineHeight: 22,
+    },
+    viewEventsButton: {
+        borderBottomWidth: 2,
+        borderBottomColor: COLORS.goldMid,
+        paddingBottom: 4,
+    },
+    viewEventsText: {
+        fontSize: 16,
+        fontWeight: '700',
+        color: COLORS.goldMid,
+    },
+});
