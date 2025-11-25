@@ -12,6 +12,7 @@ import {
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 
+
 const COLORS = {
     black: '#000000',
     white: '#FFFFFF',
