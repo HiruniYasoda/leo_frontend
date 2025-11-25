@@ -1,82 +1,38 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { router } from 'expo-router';
-import { 
-  View, 
-  Text, 
-  StyleSheet, 
-  TouchableOpacity, 
-  Image, 
-  StatusBar,
-  ScrollView,
-  ViewStyle, 
-  TextStyle,
-  ImageStyle,
-  Dimensions,
+import {
+    View,
+    Text,
+    StyleSheet,
+    ScrollView,
+    StatusBar,
+    TouchableOpacity,
+    Image,
+    Dimensions,
+    Modal,
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 
-// Dimensions for responsive badge grid
+// Responsive calculations
 const { width } = Dimensions.get('window');
 
-// Placeholder assets and data
-// NOTE: Using a generic placeholder URL since local assets are not provided
-const AVATAR_URL = 'https://placehold.co/120x120/A088C3/000?text=USER'; 
-const avatarPlaceholder = { uri: AVATAR_URL }; // Replacing require('../../assets/profile_placeholder.png'); 
+// Placeholder avatar (replace with real asset later)
+const AVATAR_URL = 'https://placehold.co/120x120/A088C3/000?text=USER';
+const avatarPlaceholder = { uri: AVATAR_URL };
 
-// --- Color Constants (Consistent Styling) ---
+// Color palette – matches the rest of the app
 const COLORS = {
-  black: '#000000',
-  white: '#FFFFFF',
-  goldMid: '#FFC72C', // Primary Yellow/Gold
-  goldDark: '#DAA520',
-  darkText: '#333333',
-  lightText: '#FFFFFF', // Text on dark background
-  goldHeaderStart: '#2C2B29', // Dark gradient start for previous background, now unused for main screen
+    black: '#000000',
+    white: '#FFFFFF',
+    goldMid: '#FFC72C',
+    goldDark: '#DAA520',
+    darkText: '#333333',
+    lightText: '#FFFFFF',
+    modalOverlay: 'rgba(0, 0, 0, 0.7)',
 };
 
-// --- Type Definitions ---
-interface Badge {
-  id: string;
-  imageUri: string;
-  code: string;
-  description: string;
-}
-
-interface Style {
-  container: ViewStyle;
-  headerBackground: ViewStyle; 
-  headerContainer: ViewStyle;
-  headerTitle: TextStyle;
-  
-  contentWrapper: ViewStyle;
-  
-  // Profile Card Styles
-  profileCardContainer: ViewStyle;
-  profileCardGradient: ViewStyle;
-  userInfoContainer: ViewStyle;
-  nameBlock: ViewStyle;
-  nameTextPrimary: TextStyle; // 'Leo Amaala'
-  nameTextSecondary: TextStyle; // 'Fernando'
-  separatorLine: ViewStyle;
-  positionText: TextStyle;
-  editIcon: TextStyle;
-  
-  avatarWrapper: ViewStyle;
-  avatarImage: ImageStyle;
-  displayNameText: TextStyle;
-  
-  // Badges Section Styles
-  badgesSection: ViewStyle;
-  sectionTitle: TextStyle;
-  badgesGrid: ViewStyle;
-  badgeItem: ViewStyle;
-  badgeImage: ImageStyle;
-  badgeCode: TextStyle;
-  badgeDescription: TextStyle;
-}
-
-// --- Hardcoded Data (as requested) ---
+// Hard‑coded user data (replace with real API later)
 const USER_DATA = {
     firstName: 'Leo Amaala',
     lastName: 'Fernando',
@@ -85,33 +41,34 @@ const USER_DATA = {
     district: 'Leo District 306 D1',
 };
 
-const BADGES_DATA: Badge[] = [
-  { id: '1', code: 'L258Y', description: 'COUNCIL CHAIRPERSON', imageUri: 'https://placehold.co/100x100/FFC72C/000?text=L1' },
-  { id: '2', code: 'A150', description: 'DISTRICT OFFICER CREST', imageUri: 'https://placehold.co/100x100/DAA520/000?text=A2' },
-  { id: '3', code: 'B6PP', description: 'PAST PRESIDENT DELUXE LAPEL TACK', imageUri: 'https://placehold.co/100x100/FFC72C/000?text=B3' },
-  { id: '4', code: 'L23Y11G', description: 'PAST INTERNATIONAL DIRECTOR BADGE, MISSION TO GROW', imageUri: 'https://placehold.co/100x100/DAA520/000?text=L4' },
-  { id: '5', code: 'W900', description: 'WORLDWIDE SERVICE AWARD', imageUri: 'https://placehold.co/100x100/FFC72C/000?text=W5' },
-  { id: '6', code: 'I10A', description: 'INTERNATIONAL ACTIVITY AWARD', imageUri: 'https://placehold.co/100x100/DAA520/000?text=I6' },
+// Sample badge data – mirrors the original design
+const BADGES_DATA = [
+    { id: '1', code: 'L258Y', description: 'COUNCIL CHAIRPERSON', imageUri: 'https://placehold.co/100x100/FFC72C/000?text=L1' },
+    { id: '2', code: 'A150', description: 'DISTRICT OFFICER CREST', imageUri: 'https://placehold.co/100x100/DAA520/000?text=A2' },
+    { id: '3', code: 'B6PP', description: 'PAST PRESIDENT DELUXE LAPEL TACK', imageUri: 'https://placehold.co/100x100/FFC72C/000?text=B3' },
+    { id: '4', code: 'L23Y11G', description: 'PAST INTERNATIONAL DIRECTOR BADGE, MISSION TO GROW', imageUri: 'https://placehold.co/100x100/DAA520/000?text=L4' },
+    { id: '5', code: 'W900', description: 'WORLDWIDE SERVICE AWARD', imageUri: 'https://placehold.co/100x100/FFC72C/000?text=W5' },
+    { id: '6', code: 'I10A', description: 'INTERNATIONAL ACTIVITY AWARD', imageUri: 'https://placehold.co/100x100/DAA520/000?text=I6' },
 ];
 
-const ProfileScreen = (): React.JSX.Element => {
-    
-    // Function to handle the navigation to the customization screen
-    // The route name is now a placeholder for 'EditProfile'
+interface Badge { id: string; code: string; description: string; imageUri: string; }
+
+export default function ProfileScreen() {
+    const [showPhotoModal, setShowPhotoModal] = useState(false);
+
     const handleEditPress = () => {
-        console.log('Navigating to EditProfile screen.');
-       
-        // In a real application with React Navigation, this would look like:
-        // navigation.navigate('EditProfile'); 
+        router.replace('/Profile/ProfileCustermization');
+    };
+
+    const handlePhotoAction = (action: 'take' | 'upload' | 'delete') => {
+        console.log(`Photo action: ${action}`);
+        setShowPhotoModal(false);
+        // TODO: Implement actual photo handling
     };
 
     const renderBadge = (badge: Badge) => (
         <View style={styles.badgeItem} key={badge.id}>
-            <Image 
-                source={{ uri: badge.imageUri }} 
-                style={styles.badgeImage} 
-                resizeMode="contain"
-            />
+            <Image source={{ uri: badge.imageUri }} style={styles.badgeImage} resizeMode="contain" />
             <Text style={styles.badgeCode}>{badge.code}</Text>
             <Text style={styles.badgeDescription}>{badge.description}</Text>
         </View>
@@ -119,254 +76,183 @@ const ProfileScreen = (): React.JSX.Element => {
 
     return (
         <View style={styles.container}>
-            <StatusBar barStyle="dark-content" backgroundColor={COLORS.white} translucent={false} />
-            
-            {/* Header Area (White Background) */}
+            <StatusBar barStyle="dark-content" backgroundColor={COLORS.white} />
+
+            {/* Header */}
             <View style={styles.headerContainer}>
-                <TouchableOpacity onPress={() => console.log('Go back pressed')}>
-                    {/* Back arrow color changed to darkText */}
-                    <Ionicons name="arrow-back" size={30} color={COLORS.darkText} /> 
+                <TouchableOpacity onPress={() => console.log('Back pressed')}>
+                    <Ionicons name="arrow-back" size={30} color={COLORS.darkText} />
                 </TouchableOpacity>
-                {/* Header Title color changed to darkText */}
-                <Text style={[styles.headerTitle, { color: COLORS.darkText }]}>Profile</Text>
+                <Text style={styles.headerTitle}>Profile</Text>
             </View>
-            
-            {/* Scrollable Content Area (White Scrollable Area) */}
-            <ScrollView 
-                showsVerticalScrollIndicator={false}
-                style={styles.contentWrapper}
-                contentContainerStyle={{ paddingBottom: 50 }}
-            >
-                {/* Profile Card */}
+
+            {/* Scrollable content */}
+            <ScrollView style={styles.contentWrapper} contentContainerStyle={{ paddingBottom: 50 }}>
+                {/* Profile card */}
                 <View style={styles.profileCardContainer}>
                     <LinearGradient
-                        // Black to Gold Horizontal Gradient
                         colors={[COLORS.black, COLORS.goldDark]}
-                        start={{ x: 0, y: 0.5 }} 
+                        start={{ x: 0, y: 0.5 }}
                         end={{ x: 1, y: 0.5 }}
                         style={styles.profileCardGradient}
                     >
                         <View style={styles.userInfoContainer}>
                             <View style={styles.nameBlock}>
-                                {/* First Line Name (Bold) */}
                                 <Text style={styles.nameTextPrimary}>{USER_DATA.firstName}</Text>
-                                {/* Second Line Name (Lighter Weight) */}
                                 <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                                     <Text style={styles.nameTextSecondary}>{USER_DATA.lastName}</Text>
-                                    {/* Edit Icon wrapped in TouchableOpacity for navigation */}
-                                    <TouchableOpacity onPress={handleEditPress}> 
-                                        <MaterialCommunityIcons name="pencil" size={16} color={COLORS.lightText} style={styles.editIcon} 
-                                         onPress={() => router.replace('/Profile/ProfileCustermization')}/>
-                                        
+                                    <TouchableOpacity onPress={handleEditPress} style={styles.editIcon}>
+                                        <MaterialCommunityIcons name="pencil" size={16} color={COLORS.lightText} />
                                     </TouchableOpacity>
                                 </View>
                             </View>
-
-                            {/* Horizontal Separator Line */}
                             <View style={styles.separatorLine} />
-                            
-                            {/* District and Position */}
                             <Text style={styles.positionText}>{USER_DATA.district}</Text>
                             <Text style={styles.positionText}>{USER_DATA.position}</Text>
                         </View>
 
-                        {/* Avatar */}
                         <View style={styles.avatarWrapper}>
-                            <Image 
-                                source={avatarPlaceholder} 
-                                style={styles.avatarImage} 
-                                resizeMode="cover"
-                            />
+                            <TouchableOpacity onPress={() => setShowPhotoModal(true)}>
+                                <Image source={avatarPlaceholder} style={styles.avatarImage} resizeMode="cover" />
+                            </TouchableOpacity>
                             <Text style={styles.displayNameText}>{USER_DATA.displayName}</Text>
                         </View>
                     </LinearGradient>
                 </View>
 
-                {/* Badges Section */}
+                {/* Badges section */}
                 <View style={styles.badgesSection}>
                     <Text style={styles.sectionTitle}>Badges</Text>
-                    
-                    <View style={styles.badgesGrid}>
-                        {BADGES_DATA.map(renderBadge)}
-                    </View>
+                    <View style={styles.badgesGrid}>{BADGES_DATA.map(renderBadge)}</View>
                 </View>
-
             </ScrollView>
+
+            {/* Photo Options Modal */}
+            <Modal
+                transparent={true}
+                visible={showPhotoModal}
+                animationType="fade"
+                onRequestClose={() => setShowPhotoModal(false)}
+            >
+                <TouchableOpacity
+                    style={styles.modalOverlay}
+                    activeOpacity={1}
+                    onPress={() => setShowPhotoModal(false)}
+                >
+                    <View style={styles.modalContent}>
+                        <TouchableOpacity
+                            style={styles.modalOption}
+                            onPress={() => handlePhotoAction('take')}
+                        >
+                            <Ionicons name="camera-outline" size={28} color={COLORS.white} />
+                            <Text style={styles.modalOptionText}>Take Photo</Text>
+                        </TouchableOpacity>
+
+                        <TouchableOpacity
+                            style={styles.modalOption}
+                            onPress={() => handlePhotoAction('upload')}
+                        >
+                            <Ionicons name="image-outline" size={28} color={COLORS.white} />
+                            <Text style={styles.modalOptionText}>Upload From Gallery</Text>
+                        </TouchableOpacity>
+
+                        <View style={styles.modalSeparator} />
+
+                        <TouchableOpacity
+                            style={[styles.modalOption, { borderBottomWidth: 0 }]}
+                            onPress={() => handlePhotoAction('delete')}
+                        >
+                            <Ionicons name="trash-outline" size={28} color={COLORS.white} />
+                            <Text style={styles.modalOptionText}>Delete Photo</Text>
+                        </TouchableOpacity>
+                    </View>
+                </TouchableOpacity>
+            </Modal>
         </View>
     );
-};
+}
 
-// --- Styles ---
 const HEADER_HEIGHT = 80;
 const CARD_MARGIN_HORIZONTAL = 20;
 const AVATAR_SIZE = 120;
+const BADGE_ITEM_WIDTH = (width - CARD_MARGIN_HORIZONTAL * 2 - 30) / 2;
 
-const BADGE_ITEM_WIDTH = (width - CARD_MARGIN_HORIZONTAL * 2 - 30) / 2; // Screen width - margins - spacing / 2 items per row
+const styles = StyleSheet.create({
+    container: { flex: 1, backgroundColor: COLORS.white },
+    headerContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        paddingTop: 40,
+        height: HEADER_HEIGHT,
+        paddingHorizontal: 20,
+        backgroundColor: COLORS.white,
+        borderBottomWidth: StyleSheet.hairlineWidth,
+        borderBottomColor: '#E0E0E0',
+    },
+    headerTitle: { color: COLORS.darkText, fontSize: 22, fontWeight: '700', marginLeft: 15 },
+    contentWrapper: { flex: 1, backgroundColor: COLORS.white },
+    profileCardContainer: { paddingHorizontal: CARD_MARGIN_HORIZONTAL, marginTop: 20, marginBottom: 30 },
+    profileCardGradient: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        paddingVertical: 25,
+        paddingHorizontal: 25,
+        borderRadius: 15,
+        elevation: 8,
+        shadowColor: COLORS.black,
+        shadowOffset: { width: 0, height: 4 },
+        shadowOpacity: 0.3,
+        shadowRadius: 5,
+    },
+    userInfoContainer: { flex: 1, paddingRight: 15 },
+    nameBlock: { marginBottom: 10 },
+    nameTextPrimary: { color: COLORS.lightText, fontSize: 24, fontWeight: '800', lineHeight: 28 },
+    nameTextSecondary: { color: COLORS.lightText, fontSize: 24, fontWeight: '500', lineHeight: 28 },
+    editIcon: { marginLeft: 8, alignSelf: 'flex-start', marginTop: 5 },
+    separatorLine: { height: 1.5, width: '70%', backgroundColor: COLORS.lightText, opacity: 0.7, marginVertical: 10 },
+    positionText: { color: COLORS.lightText, fontSize: 14, fontWeight: '500', lineHeight: 20 },
+    avatarWrapper: { alignItems: 'center' },
+    avatarImage: { width: AVATAR_SIZE, height: AVATAR_SIZE, borderRadius: AVATAR_SIZE / 2 },
+    displayNameText: { color: COLORS.lightText, fontSize: 14, fontWeight: '600', marginTop: 5 },
+    badgesSection: { paddingHorizontal: CARD_MARGIN_HORIZONTAL, paddingTop: 0, marginBottom: 25 },
+    sectionTitle: { fontSize: 20, fontWeight: '700', color: COLORS.darkText, marginBottom: 20 },
+    badgesGrid: { flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between' },
+    badgeItem: { width: BADGE_ITEM_WIDTH, backgroundColor: COLORS.white, borderRadius: 15, padding: 10, alignItems: 'center', marginBottom: 20, borderWidth: 1, borderColor: '#E0E0E0', elevation: 1, shadowColor: COLORS.black, shadowOffset: { width: 0, height: 1 }, shadowOpacity: 0.08, shadowRadius: 2 },
+    badgeImage: { width: 80, height: 80, marginBottom: 5 },
+    badgeCode: { fontSize: 12, fontWeight: '700', color: COLORS.darkText, textAlign: 'center', marginTop: 5 },
+    badgeDescription: { fontSize: 12, fontWeight: '400', color: COLORS.darkText, textAlign: 'center', marginTop: 2 },
 
-const styles = StyleSheet.create<Style>({
-  container: {
-    flex: 1,
-    backgroundColor: COLORS.white, // Main screen background is white
-  },
-  
-  // --- Header Styles (Plain White) ---
-  headerBackground: {
-    // This style is effectively unused now as we use headerContainer for the title bar
-    // but kept for type compatibility
-    zIndex: 1, 
-  },
-
-  headerContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingTop: 40, // Adjust for status bar space
-    height: HEADER_HEIGHT,
-    paddingHorizontal: 20,
-    backgroundColor: COLORS.white, // Ensure white background for the header area
-    // Optional: Add a subtle shadow if needed to separate header
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: '#E0E0E0', 
-  },
-
-  headerTitle: {
-    color: COLORS.darkText, // Dark text on white header
-    fontSize: 22,
-    fontWeight: '700',
-    marginLeft: 15,
-  },
-  
-  // --- Content Wrapper (White Scrollable Area) ---
-  contentWrapper: {
-    flex: 1,
-    backgroundColor: COLORS.white,
-  },
-
-  // --- Profile Card Styles ---
-  profileCardContainer: {
-    paddingHorizontal: CARD_MARGIN_HORIZONTAL,
-    marginTop: 20, // Space below the header
-    marginBottom: 30,
-  },
-  profileCardGradient: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingVertical: 25,
-    paddingHorizontal: 25,
-    borderRadius: 15,
-    overflow: 'hidden', // Ensures shadow doesn't escape rounded corners
-    elevation: 8,
-    shadowColor: COLORS.black,
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 5,
-  },
-  userInfoContainer: {
-    flex: 1,
-    paddingRight: 15,
-  },
-  nameBlock: {
-    marginBottom: 10,
-  },
-  nameTextPrimary: {
-    color: COLORS.lightText,
-    fontSize: 24,
-    fontWeight: '800', // Bold weight for the first line
-    lineHeight: 28,
-  },
-  nameTextSecondary: {
-    color: COLORS.lightText,
-    fontSize: 24,
-    fontWeight: '500', // Lighter weight for the second name (as requested)
-    lineHeight: 28,
-  },
-  editIcon: {
-    marginLeft: 8,
-    alignSelf: 'flex-start',
-    marginTop: 5, // Vertically align with the second name
-  },
-  
-  separatorLine: {
-    height: 1.5,
-    width: '70%', // Width matching the visual
-    backgroundColor: COLORS.lightText,
-    opacity: 0.7,
-    marginVertical: 10,
-  },
-
-  positionText: {
-    color: COLORS.lightText,
-    fontSize: 14,
-    fontWeight: '500',
-    lineHeight: 20,
-  },
-
-  avatarWrapper: {
-    alignItems: 'center',
-  },
-  avatarImage: {
-    width: AVATAR_SIZE,
-    height: AVATAR_SIZE,
-    borderRadius: AVATAR_SIZE / 2,
-    // No border/stroke
-  },
-  displayNameText: {
-    color: COLORS.lightText, // White text for display name below avatar
-    fontSize: 14,
-    fontWeight: '600',
-    marginTop: 5,
-  },
-
-  // --- Badges Section Styles (On White Background) ---
-  badgesSection: {
-    paddingHorizontal: CARD_MARGIN_HORIZONTAL,
-    paddingTop: 0,
-  },
-  sectionTitle: {
-    fontSize: 20,
-    fontWeight: '700',
-    color: COLORS.darkText, // Dark text on white background
-    marginBottom: 20,
-  },
-  badgesGrid: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'space-between',
-  },
-  badgeItem: {
-    width: BADGE_ITEM_WIDTH,
-    backgroundColor: COLORS.white,
-    borderRadius: 15,
-    padding: 10,
-    alignItems: 'center',
-    marginBottom: 20,
-    borderWidth: 1,
-    borderColor: '#E0E0E0', 
-    elevation: 1,
-    shadowColor: COLORS.black,
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.08,
-    shadowRadius: 2,
-  },
-  badgeImage: {
-    width: 80,
-    height: 80,
-    marginBottom: 5,
-  },
-  badgeCode: {
-    fontSize: 12,
-    fontWeight: '700',
-    color: COLORS.darkText,
-    textAlign: 'center',
-    marginTop: 5,
-  },
-  badgeDescription: {
-    fontSize: 12,
-    fontWeight: '400',
-    color: COLORS.darkText,
-    textAlign: 'center',
-    marginTop: 2,
-  },
-} as const);
-
-export default ProfileScreen;
+    // Modal styles
+    modalOverlay: {
+        flex: 1,
+        backgroundColor: COLORS.modalOverlay,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    modalContent: {
+        backgroundColor: '#1C1C1E',
+        borderRadius: 16,
+        width: '80%',
+        maxWidth: 350,
+        overflow: 'hidden',
+    },
+    modalOption: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        padding: 20,
+        borderBottomWidth: 1,
+        borderBottomColor: 'rgba(255, 255, 255, 0.1)',
+    },
+    modalOptionText: {
+        color: COLORS.white,
+        fontSize: 18,
+        fontWeight: '500',
+        marginLeft: 16,
+    },
+    modalSeparator: {
+        height: 1,
+        backgroundColor: COLORS.goldMid,
+        marginHorizontal: 20,
+    },
+});
