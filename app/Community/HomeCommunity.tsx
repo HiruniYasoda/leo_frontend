@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import { useRouter } from 'expo-router';
+import { router } from 'expo-router';
 import {
   View,
   Text,
@@ -207,7 +207,8 @@ export default function HomeCommunity() {
         </TouchableOpacity>
         <Text style={styles.headerTitle}>Community</Text>
         <View style={styles.headerRight}>
-          <TouchableOpacity style={styles.headerButton}>
+          <TouchableOpacity style={styles.headerButton} activeOpacity={0.8} 
+                              onPress={() => router.push('/Community/Chat')}>
             <Users size={24} color="#1A1A1A" />
           </TouchableOpacity>
           <View style={styles.profileImage} />
