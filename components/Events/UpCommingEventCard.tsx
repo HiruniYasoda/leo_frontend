@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, Image, TouchableOpacity, Alert } from 'react-native';
-import { Calendar, Clock, MapPin, Share2, CalendarCheck, UserCheck } from 'lucide-react-native';
+import ShareModal from '@/components/Feed/ShareModel'; // ✅ same modal you used in PostCard
 import { useRouter } from 'expo-router';
-import ShareModal from '@/components/ShareModel'; // ✅ same modal you used in PostCard
+import { Calendar, CalendarCheck, Clock, MapPin, Share2, UserCheck } from 'lucide-react-native';
+import React, { useState } from 'react';
+import { Alert, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 const COLORS = {
   white: '#FFFFFF',

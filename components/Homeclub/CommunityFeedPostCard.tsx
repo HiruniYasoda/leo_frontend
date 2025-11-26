@@ -7,6 +7,8 @@ import {
   StyleSheet,
 } from 'react-native';
 import { Heart, MessageCircle, Share2, Bookmark } from 'lucide-react-native';
+import CommentsSheet from '@/components/Feed/CommentsSheet';
+import ShareModal from '@/components/Community/ShareModel';
 
 interface FeedPost {
   id: string;
@@ -25,26 +27,29 @@ interface CommunityFeedPostCardProps {
   post: FeedPost;
 }
 
-export default function CommunityFeedPostCard({
-  post,
-}: CommunityFeedPostCardProps) {
+export default function CommunityFeedPostCard({ post }: CommunityFeedPostCardProps) {
   const [isBookmarked, setIsBookmarked] = useState(false);
   const [isLiked, setIsLiked] = useState(false);
   const [likeCount, setLikeCount] = useState(post.likes);
+
+  const [isCommentsVisible, setIsCommentsVisible] = useState(false);
+  const [isShareModalVisible, setIsShareModalVisible] = useState(false);
 
   const handleLike = () => {
     setIsLiked(!isLiked);
     setLikeCount(isLiked ? likeCount - 1 : likeCount + 1);
   };
 
+  const handleShareOption = (option: string) => {
+    console.log(`Shared to ${option}`);
+  };
+
   return (
     <View style={styles.container}>
+      {/* Header */}
       <View style={styles.header}>
         <View style={styles.authorInfo}>
-          <Image
-            source={{ uri: post.authorImage }}
-            style={styles.authorImage}
-          />
+          <Image source={{ uri: post.authorImage }} style={styles.authorImage} />
           <View>
             <Text style={styles.authorName}>{post.authorName}</Text>
             <Text style={styles.authorPosition}>{post.authorPosition}</Text>
@@ -52,61 +57,63 @@ export default function CommunityFeedPostCard({
         </View>
         <TouchableOpacity onPress={() => setIsBookmarked(!isBookmarked)}>
           <Bookmark
-            size={16}
-            color={isBookmarked ? '#FFD700' : '#999999'}
-            fill={isBookmarked ? '#FFD700' : 'none'}
+            size={20}
+            color={isBookmarked ? '#FFB800' : '#999999'}
+            fill={isBookmarked ? '#FFB800' : 'none'}
           />
         </TouchableOpacity>
       </View>
 
+      {/* Content */}
       <View style={styles.contentWrapper}>
         <View style={styles.imageSection}>
-          <Image
-            source={{ uri: post.postImage }}
-            style={styles.postImage}
-          />
+          <Image source={{ uri: post.postImage }} style={styles.postImage} />
         </View>
 
         <View style={styles.divider} />
 
         <View style={styles.textSection}>
           <Text style={styles.title}>{post.title}</Text>
-          <Text style={styles.content} numberOfLines={3}>
-            {post.content}
-          </Text>
+          <Text style={styles.content} numberOfLines={3}>{post.content}</Text>
 
+          {/* Engagement Bar */}
           <View style={styles.engagementBar}>
-            <TouchableOpacity
-              style={styles.engagementButton}
-              onPress={handleLike}
-            >
-              <Heart
-                size={16}
-                color={isLiked ? '#FFD700' : '#666666'}
-                fill={isLiked ? '#FFD700' : 'none'}
-              />
-              <Text
-                style={[
-                  styles.engagementText,
-                  isLiked && styles.engagementTextActive,
-                ]}
-              >
+            {/* Like Button */}
+            <TouchableOpacity style={styles.engagementButton} onPress={handleLike}>
+              <Heart size={18} color={isLiked ? '#EE5A5A' : '#666666'} fill={isLiked ? '#EE5A5A' : 'none'} />
+              <Text style={[styles.engagementText, isLiked && styles.engagementTextActive]}>
                 {likeCount}
               </Text>
             </TouchableOpacity>
 
-            <TouchableOpacity style={styles.engagementButton}>
-              <MessageCircle size={16} color="#666666" />
+            {/* Comment Button */}
+            <TouchableOpacity style={styles.engagementButton} onPress={() => setIsCommentsVisible(true)}>
+              <MessageCircle size={18} color="#666666" />
               <Text style={styles.engagementText}>{post.comments}</Text>
             </TouchableOpacity>
 
-            <TouchableOpacity style={styles.engagementButton}>
-              <Share2 size={16} color="#666666" />
+            {/* Share Button */}
+            <TouchableOpacity style={styles.engagementButton} onPress={() => setIsShareModalVisible(true)}>
+              <Share2 size={18} color="#666666" />
               <Text style={styles.engagementText}>{post.shares}</Text>
             </TouchableOpacity>
           </View>
         </View>
       </View>
+
+      {/* Modals */}
+      <CommentsSheet
+        visible={isCommentsVisible}
+        onClose={() => setIsCommentsVisible(false)}
+        postId={post.id}
+        totalComments={post.comments}
+      />
+
+      <ShareModal
+        visible={isShareModalVisible}
+        onClose={() => setIsShareModalVisible(false)}
+        onShareOption={handleShareOption}
+      />
     </View>
   );
 }
@@ -114,43 +121,44 @@ export default function CommunityFeedPostCard({
 const styles = StyleSheet.create({
   container: {
     backgroundColor: '#FFFFFF',
-    borderRadius: 8,
-    borderWidth: 1,
-    borderColor: '#CCCCCC',
-    padding: 16,
-    marginVertical: 8,
-    marginHorizontal: 8,
+    borderRadius: 16,
+    borderWidth: 2,
+    borderColor: '#E5E5E5',
+    padding: 24,
+    marginVertical: 12,
+    marginHorizontal: 12,
   },
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 12,
+    alignItems: 'flex-start',
+    marginBottom: 16,
   },
   authorInfo: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 8,
+    gap: 12,
     flex: 1,
   },
   authorImage: {
-    width: 32,
-    height: 32,
-    borderRadius: 16,
+    width: 48,
+    height: 48,
+    borderRadius: 24,
     resizeMode: 'cover',
   },
   authorName: {
-    fontSize: 12,
-    fontWeight: '600',
-    color: '#000000',
+    fontSize: 14,
+    fontWeight: '700',
+    color: '#1A1A1A',
   },
   authorPosition: {
-    fontSize: 10,
+    fontSize: 12,
     color: '#666666',
+    marginTop: 2,
   },
   contentWrapper: {
     flexDirection: 'row',
-    gap: 12,
+    gap: 16,
   },
   imageSection: {
     width: '30%',
@@ -158,47 +166,48 @@ const styles = StyleSheet.create({
   postImage: {
     width: '100%',
     aspectRatio: 1,
-    borderRadius: 6,
+    borderRadius: 12,
     resizeMode: 'cover',
   },
   divider: {
     width: 1,
-    backgroundColor: '#CCCCCC',
+    backgroundColor: '#E5E5E5',
   },
   textSection: {
     flex: 1,
     justifyContent: 'space-between',
   },
   title: {
-    fontSize: 12,
-    fontWeight: '600',
-    color: '#000000',
-    marginBottom: 6,
+    fontSize: 14,
+    fontWeight: '700',
+    color: '#1A1A1A',
+    marginBottom: 8,
   },
   content: {
-    fontSize: 10,
+    fontSize: 12,
     color: '#333333',
-    lineHeight: 14,
-    marginBottom: 8,
+    lineHeight: 18,
+    marginBottom: 12,
+    flex: 1,
   },
   engagementBar: {
     flexDirection: 'row',
-    gap: 12,
-    paddingTop: 8,
+    gap: 20,
+    paddingTop: 12,
     borderTopWidth: 1,
-    borderTopColor: '#CCCCCC',
+    borderTopColor: '#E5E5E5',
   },
   engagementButton: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 4,
+    gap: 6,
   },
   engagementText: {
-    fontSize: 10,
+    fontSize: 11,
     fontWeight: '500',
     color: '#666666',
   },
   engagementTextActive: {
-    color: '#FFD700',
+    color: '#EE5A5A',
   },
 });

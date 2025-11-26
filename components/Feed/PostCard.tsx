@@ -1,16 +1,16 @@
+import ShareModal from '@/components/Feed/ShareModel'; // Import the separate ShareModal component
+import { Bookmark, Heart, MessageCircle, Share2 } from 'lucide-react-native';
 import React, { useState } from 'react';
 import {
-  View,
-  Text,
   Image,
-  StyleSheet,
-  TouchableOpacity,
-  ViewStyle,
-  TextStyle,
   ImageStyle,
+  StyleSheet,
+  Text,
+  TextStyle,
+  TouchableOpacity,
+  View,
+  ViewStyle,
 } from 'react-native';
-import { Heart, MessageCircle, Share2, Bookmark } from 'lucide-react-native';
-import ShareModal from '@/components/ShareModel'; // Import the separate ShareModal component
 
 const COLORS = {
   black: '#000000',

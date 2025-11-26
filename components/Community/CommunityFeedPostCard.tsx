@@ -7,6 +7,8 @@ import {
   StyleSheet,
 } from 'react-native';
 import { Heart, MessageCircle, Share2, Bookmark } from 'lucide-react-native';
+import CommentsSheet from '@/components/Feed/CommentsSheet';
+import ShareModal from '@/components/Community/ShareModel';
 
 interface FeedPost {
   id: string;
@@ -25,26 +27,29 @@ interface CommunityFeedPostCardProps {
   post: FeedPost;
 }
 
-export default function CommunityFeedPostCard({
-  post,
-}: CommunityFeedPostCardProps) {
+export default function CommunityFeedPostCard({ post }: CommunityFeedPostCardProps) {
   const [isBookmarked, setIsBookmarked] = useState(false);
   const [isLiked, setIsLiked] = useState(false);
   const [likeCount, setLikeCount] = useState(post.likes);
+
+  const [isCommentsVisible, setIsCommentsVisible] = useState(false);
+  const [isShareModalVisible, setIsShareModalVisible] = useState(false);
 
   const handleLike = () => {
     setIsLiked(!isLiked);
     setLikeCount(isLiked ? likeCount - 1 : likeCount + 1);
   };
 
+  const handleShareOption = (option: string) => {
+    console.log(`Shared to ${option}`);
+  };
+
   return (
     <View style={styles.container}>
+      {/* Header */}
       <View style={styles.header}>
         <View style={styles.authorInfo}>
-          <Image
-            source={{ uri: post.authorImage }}
-            style={styles.authorImage}
-          />
+          <Image source={{ uri: post.authorImage }} style={styles.authorImage} />
           <View>
             <Text style={styles.authorName}>{post.authorName}</Text>
             <Text style={styles.authorPosition}>{post.authorPosition}</Text>
@@ -59,54 +64,56 @@ export default function CommunityFeedPostCard({
         </TouchableOpacity>
       </View>
 
+      {/* Content */}
       <View style={styles.contentWrapper}>
         <View style={styles.imageSection}>
-          <Image
-            source={{ uri: post.postImage }}
-            style={styles.postImage}
-          />
+          <Image source={{ uri: post.postImage }} style={styles.postImage} />
         </View>
 
         <View style={styles.divider} />
 
         <View style={styles.textSection}>
           <Text style={styles.title}>{post.title}</Text>
-          <Text style={styles.content} numberOfLines={3}>
-            {post.content}
-          </Text>
+          <Text style={styles.content} numberOfLines={3}>{post.content}</Text>
 
+          {/* Engagement Bar */}
           <View style={styles.engagementBar}>
-            <TouchableOpacity
-              style={styles.engagementButton}
-              onPress={handleLike}
-            >
-              <Heart
-                size={18}
-                color={isLiked ? '#EE5A5A' : '#666666'}
-                fill={isLiked ? '#EE5A5A' : 'none'}
-              />
-              <Text
-                style={[
-                  styles.engagementText,
-                  isLiked && styles.engagementTextActive,
-                ]}
-              >
+            {/* Like Button */}
+            <TouchableOpacity style={styles.engagementButton} onPress={handleLike}>
+              <Heart size={18} color={isLiked ? '#EE5A5A' : '#666666'} fill={isLiked ? '#EE5A5A' : 'none'} />
+              <Text style={[styles.engagementText, isLiked && styles.engagementTextActive]}>
                 {likeCount}
               </Text>
             </TouchableOpacity>
 
-            <TouchableOpacity style={styles.engagementButton}>
+            {/* Comment Button */}
+            <TouchableOpacity style={styles.engagementButton} onPress={() => setIsCommentsVisible(true)}>
               <MessageCircle size={18} color="#666666" />
               <Text style={styles.engagementText}>{post.comments}</Text>
             </TouchableOpacity>
 
-            <TouchableOpacity style={styles.engagementButton}>
+            {/* Share Button */}
+            <TouchableOpacity style={styles.engagementButton} onPress={() => setIsShareModalVisible(true)}>
               <Share2 size={18} color="#666666" />
               <Text style={styles.engagementText}>{post.shares}</Text>
             </TouchableOpacity>
           </View>
         </View>
       </View>
+
+      {/* Modals */}
+      <CommentsSheet
+        visible={isCommentsVisible}
+        onClose={() => setIsCommentsVisible(false)}
+        postId={post.id}
+        totalComments={post.comments}
+      />
+
+      <ShareModal
+        visible={isShareModalVisible}
+        onClose={() => setIsShareModalVisible(false)}
+        onShareOption={handleShareOption}
+      />
     </View>
   );
 }
