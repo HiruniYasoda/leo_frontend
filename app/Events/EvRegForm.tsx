@@ -172,7 +172,8 @@ export default function EventRegistrationScreen() {
                         {/* Action Buttons */}
                         <View style={styles.buttonsContainer}>
                             <TouchableOpacity style={styles.submitButton} onPress={handleSubmit}>
-                                <Text style={styles.buttonText}>Submit</Text>
+                                <Text style={styles.buttonText} 
+                                onPress={() => router.push('/Feedbacks/EventReg')}>Submit</Text>
                             </TouchableOpacity>
                             <TouchableOpacity style={styles.clearButton} onPress={handleClear}>
                                 <Text style={styles.buttonText}>Clear</Text>

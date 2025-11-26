@@ -23,7 +23,7 @@ export default function EventRegVerificationScreen() {
     const handleViewMyEvents = () => {
         console.log('Navigate to My Events');
         // Navigate to My Events tab in Event screen
-        router.push('/customScreens/Event');
+        router.push('/Events/MyEvent');
     };
 
     return (

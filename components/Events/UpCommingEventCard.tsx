@@ -36,7 +36,7 @@ const UpcomingEventCard: React.FC<UpcomingEventCardProps> = ({ event }) => {
 
   const handleAttendPress = () => {
     router.push({
-      pathname: '/app/Events/EvRegForm' as any,
+      pathname: '/Events/EvRegForm',
       params: { eventId: event.id, eventTitle: event.title }
     });
   };
@@ -96,7 +96,7 @@ const handleReminder = () => {
         </View>
 
         <View style={styles.actions}>
-          <TouchableOpacity style={styles.actionButton} onPress={handleAttendPress}>
+          <TouchableOpacity style={styles.actionButton} onPress={() => router.push('/Events/EvRegForm')}>
             <UserCheck color={COLORS.mediumGrey} size={20} />
             <Text style={styles.actionText}>Attend</Text>
           </TouchableOpacity>
