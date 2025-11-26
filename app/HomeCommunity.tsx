@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import { useRouter } from 'expo-router'; // 1. Import Router
+import { useRouter } from 'expo-router';
 import {
   View,
   Text,
@@ -10,17 +10,16 @@ import {
   Modal,
 } from 'react-native';
 import { ArrowLeft, Users, ChevronLeft, ChevronRight } from 'lucide-react-native';
-import CommunityCard from '@/components/Community/CommunityCard';
-import LeadershipCard from '@/components/Community/LeadershipCard';
-import ClubCard from '@/components/Community/ClubCard';
-import PollCard from '@/components/Community/PollCard';
-import CommunityFeedPostCard from '@/components/Community/CommunityFeedPostCard';
+import CommunityCard from '@/components/Homeclub/CommunityCard'; // Updated import path
+import LeadershipCard from '@/components/Homeclub/LeadershipCard'; // Updated import path
+import ClubCard from '@/components/Homeclub/ClubCard'; // Updated import path
+import PollCard from '@/components/Homeclub/PollCard'; // Updated import path
+import CommunityFeedPostCard from '@/components/Homeclub/CommunityFeedPostCard'; // Updated import path
 
-export default function CommunityScreen() {
+export default function HomeCommunity() {
   const [selectedYear, setSelectedYear] = useState<string>('');
   const [showYearDropdown, setShowYearDropdown] = useState(false);
 
-  // allow null in the ref type
   const leadershipScrollRef = useRef<ScrollView | null>(null);
   const clubsScrollRef = useRef<ScrollView | null>(null);
 
@@ -37,7 +36,6 @@ export default function CommunityScreen() {
     '2015 - 2016',
   ];
 
-  // renamed `name` -> `districtName` so it matches CommunityCardProps
   const districtData = {
     districtName: '306 D01',
     tagline: 'FIND A WAY OR MAKE A WAY',
@@ -45,8 +43,8 @@ export default function CommunityScreen() {
       'Leo District 306 D1 is the Leo District that expands from Colombo City such areas as Port City, Kollupitiya, Wellawatte, Bambalapitiya and the West of Galle Road, Dehiwala, Mt. Lavinia, Moratuwa. Covering different portions of Kalutara, Panadura, Beruwala, Bentota, Balapitiya, Ambalangoda and other nearby divisions.',
     logoUrl:
       'https://images.pexels.com/photos/1181346/pexels-photo-1181346.jpeg?auto=compress&cs=tinysrgb&w=400',
-    gradientFrom: '#001f54',
-    gradientTo: '#0066cc',
+    gradientFrom: '#FFD700', // Kept for compatibility, but simplified components use fixed yellow-black
+    gradientTo: '#000000',
   };
 
   const leadershipData = [
@@ -56,8 +54,8 @@ export default function CommunityScreen() {
       position: 'President',
       imageUrl:
         'https://images.pexels.com/photos/774909/pexels-photo-774909.jpeg?auto=compress&cs=tinysrgb&w=400',
-      gradientFrom: '#001f54',
-      gradientTo: '#0066cc',
+      gradientFrom: '#FFD700',
+      gradientTo: '#000000',
     },
     {
       id: '2',
@@ -65,8 +63,8 @@ export default function CommunityScreen() {
       position: 'Immediate Past District President',
       imageUrl:
         'https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=400',
-      gradientFrom: '#001f54',
-      gradientTo: '#0066cc',
+      gradientFrom: '#FFD700',
+      gradientTo: '#000000',
     },
     {
       id: '3',
@@ -74,8 +72,8 @@ export default function CommunityScreen() {
       position: 'District Vice President',
       imageUrl:
         'https://images.pexels.com/photos/1516680/pexels-photo-1516680.jpeg?auto=compress&cs=tinysrgb&w=400',
-      gradientFrom: '#001f54',
-      gradientTo: '#0066cc',
+      gradientFrom: '#FFD700',
+      gradientTo: '#000000',
     },
     {
       id: '4',
@@ -83,36 +81,35 @@ export default function CommunityScreen() {
       position: 'District Secretary',
       imageUrl:
         'https://images.pexels.com/photos/415829/pexels-photo-415829.jpeg?auto=compress&cs=tinysrgb&w=400',
-      gradientFrom: '#001f54',
-      gradientTo: '#0066cc',
+      gradientFrom: '#FFD700',
+      gradientTo: '#000000',
     },
   ];
 
-  // renamed `name` -> `clubName` so it matches ClubCardProps
   const clubsData = [
     {
       id: '1',
       clubName: 'Leo Club of Colombo University Faculty of Science',
-      gradientFrom: '#001f54',
-      gradientTo: '#0066cc',
+      gradientFrom: '#FFD700',
+      gradientTo: '#000000',
     },
     {
       id: '2',
       clubName: 'Leo Club of Colombo Six New Stars',
-      gradientFrom: '#001f54',
-      gradientTo: '#0066cc',
+      gradientFrom: '#FFD700',
+      gradientTo: '#000000',
     },
     {
       id: '3',
       clubName: 'Leo Club of Kothalawala Defense University',
-      gradientFrom: '#001f54',
-      gradientTo: '#0066cc',
+      gradientFrom: '#FFD700',
+      gradientTo: '#000000',
     },
     {
       id: '4',
       clubName: 'Leo Club of Moratuwa University',
-      gradientFrom: '#001f54',
-      gradientTo: '#0066cc',
+      gradientFrom: '#FFD700',
+      gradientTo: '#000000',
     },
   ];
 
@@ -189,7 +186,6 @@ export default function CommunityScreen() {
       ]
     : [];
 
-  // accept ref that may be null
   const scroll = (
     ref: React.RefObject<ScrollView | null>,
     direction: 'left' | 'right'
