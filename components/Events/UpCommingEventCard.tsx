@@ -1,7 +1,8 @@
-import React from 'react';
-import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, StyleSheet, Image, TouchableOpacity, Alert } from 'react-native';
 import { Calendar, Clock, MapPin, Share2, CalendarCheck, UserCheck } from 'lucide-react-native';
 import { useRouter } from 'expo-router';
+import ShareModal from '@/components/ShareModel'; // ✅ same modal you used in PostCard
 
 const COLORS = {
   white: '#FFFFFF',
@@ -31,12 +32,31 @@ interface UpcomingEventCardProps {
 const UpcomingEventCard: React.FC<UpcomingEventCardProps> = ({ event }) => {
   const router = useRouter();
 
+  const [isModalVisible, setIsModalVisible] = useState(false);
+
   const handleAttendPress = () => {
     router.push({
-      pathname: '/app/Events/EvRegForm' as any, // Cast to any to bypass strict typing
+      pathname: '/app/Events/EvRegForm' as any,
       params: { eventId: event.id, eventTitle: event.title }
     });
   };
+
+  const handleShare = () => {
+    setIsModalVisible(true);
+  };
+
+  const handleShareOption = (option: string) => {
+    console.log(`Event shared to ${option}`);
+  };
+
+  
+
+const handleReminder = () => {
+
+  Alert.alert("Reminder Added", "You will be notified before the event.");
+};
+
+
 
   return (
     <View style={styles.card}>
@@ -81,17 +101,24 @@ const UpcomingEventCard: React.FC<UpcomingEventCardProps> = ({ event }) => {
             <Text style={styles.actionText}>Attend</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.actionButton}>
+          <TouchableOpacity style={styles.actionButton} onPress={handleShare}>
             <Share2 color={COLORS.mediumGrey} size={20} />
             <Text style={styles.actionText}>Share</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.actionButton}>
+          {/* ✅ Added onPress */}
+          <TouchableOpacity style={styles.actionButton} onPress={handleReminder}>
             <CalendarCheck color={COLORS.mediumGrey} size={20} />
             <Text style={styles.actionText}>Reminder</Text>
           </TouchableOpacity>
         </View>
       </View>
+
+      <ShareModal
+        visible={isModalVisible}
+        onClose={() => setIsModalVisible(false)}
+        onShareOption={handleShareOption}
+      />
     </View>
   );
 };
