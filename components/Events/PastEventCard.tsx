@@ -1,4 +1,5 @@
 import React from 'react';
+import { router } from 'expo-router';
 import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
 import { Calendar, Clock, MapPin, Image as ImageIcon, Award } from 'lucide-react-native';
 
@@ -66,9 +67,9 @@ const PastEventCard: React.FC<PastEventCardProps> = ({ event }) => {
         </View>
 
         <View style={styles.actions}>
-          <TouchableOpacity style={styles.actionButton}>
+          <TouchableOpacity style={styles.actionButton} onPress={() => router.push('/Events/Gallery')}>
             <ImageIcon color={COLORS.mediumGrey} size={20} />
-            <Text style={styles.actionText}>View Gallery</Text>
+            <Text style={styles.actionText} >View Gallery</Text>
           </TouchableOpacity>
 
           <TouchableOpacity style={styles.actionButton}>
