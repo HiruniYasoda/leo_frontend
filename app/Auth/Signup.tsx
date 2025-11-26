@@ -84,7 +84,7 @@ const SignupScreen = (): React.JSX.Element => {
         {/* Sign In Button */}
         <TouchableOpacity 
           style={styles.signInButton}
-          onPress={() => router.replace('/ChooseAcc')}
+          onPress={() => router.replace('../../Auth/ChooseAcc')}
           activeOpacity={0.8}
         >
           <Image 

@@ -182,7 +182,7 @@ const NationalFeed: React.FC = () => {
               <Plus color={COLORS.white} size={24} />
             </TouchableOpacity>
 
-            <TouchableOpacity activeOpacity={0.8} onPress={() => router.push('/Community')}>
+            <TouchableOpacity activeOpacity={0.8} onPress={() => router.push('/Community/Community')}>
               <Image
                 source={{
                   uri: 'https://images.pexels.com/photos/4386431/pexels-photo-4386431.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&dpr=1',
@@ -192,7 +192,7 @@ const NationalFeed: React.FC = () => {
               />
             </TouchableOpacity>
 
-            <TouchableOpacity activeOpacity={0.8}>
+            <TouchableOpacity activeOpacity={0.8}onPress={() => router.push('/Community/HomeCommunity')} >
               <Image
                 source={{
                   uri: 'https://images.pexels.com/photos/3184338/pexels-photo-3184338.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&dpr=1',
@@ -205,7 +205,7 @@ const NationalFeed: React.FC = () => {
         </LinearGradient>
 
         <View style={styles.searchContainer}>
-          <View style={styles.searchBar}>
+          <View style={styles.searchBar} >
             <View style={styles.searchIcon}>
               <Search color={COLORS.greyText} size={18} />
             </View>
