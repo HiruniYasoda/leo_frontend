@@ -16,9 +16,9 @@ import {
 import { Search, Plus, Home, ShoppingBag, Award, Bell, Calendar } from 'lucide-react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { router } from 'expo-router'; // Add this import for navigation
-import PostCard from '@/components/PostCard';
+import PostCard from '@/components/Feed/PostCard';
 import BottomNav from '@/components/BottomNav';
-import CommentsSheet from '@/components/CommentsSheet';
+import CommentsSheet from '@/components/Feed/CommentsSheet';
 
 const COLORS = {
   black: '#000000',
@@ -158,13 +158,15 @@ const NationalFeed: React.FC = () => {
             </View>
           </View>
 
-          <TouchableOpacity style={styles.profileButton} activeOpacity={0.8}>
+          <TouchableOpacity style={styles.profileButton} activeOpacity={0.8} 
+          onPress={() => router.push('/Profile/OwnProfile')} >
             <Image
               source={{
                 uri: 'https://images.pexels.com/photos/771742/pexels-photo-771742.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&dpr=1',
               }}
               style={styles.profileImage}
               resizeMode="cover"
+              
             />
           </TouchableOpacity>
         </View>
@@ -176,11 +178,11 @@ const NationalFeed: React.FC = () => {
           style={styles.clubsContainer}
         >
           <View style={styles.clubsRow}>
-            <TouchableOpacity style={styles.addButton} activeOpacity={0.7}>
+            <TouchableOpacity style={styles.addButton} activeOpacity={0.7} onPress={() => router.push('/Feed')}>
               <Plus color={COLORS.white} size={24} />
             </TouchableOpacity>
 
-            <TouchableOpacity activeOpacity={0.8}>
+            <TouchableOpacity activeOpacity={0.8} onPress={() => router.push('/Community')}>
               <Image
                 source={{
                   uri: 'https://images.pexels.com/photos/4386431/pexels-photo-4386431.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&dpr=1',

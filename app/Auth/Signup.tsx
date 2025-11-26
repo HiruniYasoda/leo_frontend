@@ -18,8 +18,8 @@ import { Ionicons } from '@expo/vector-icons';
 // ✔ Correct Asset Imports
 // Note: In a real project, these require statements might need adjustments 
 // or TypeScript definitions if you're not using a specific asset loader configuration.
-const logo = require('../assets/images/logo.png');
-const googleIcon = require('../assets/images/google_icon.png');
+const logo = require('../../assets/images/logo.png');
+const googleIcon = require('../../assets/images/google_icon.png');
 
 // --- Color Constants ---
 const COLORS = {

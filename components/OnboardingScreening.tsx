@@ -218,7 +218,7 @@ export default function OnboardingScreening() {
             // </TouchableOpacity>
 
             <TouchableOpacity
-              onPress={() => router.replace('/Signup')}
+              onPress={() => router.replace('../../Auth/Signup')}
               style={styles.primaryButton}
             >
               <Text style={styles.primaryButtonText}>Get Started</Text>

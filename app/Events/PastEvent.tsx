@@ -11,7 +11,7 @@ import {
 import { useRouter } from 'expo-router';
 import { ArrowLeft, Search, User } from 'lucide-react-native';
 import { LinearGradient } from 'expo-linear-gradient';
-import PastEventCard, { PastEventData } from '@/components/PastEventCard';
+import PastEventCard, { PastEventData } from '@/components/Events/PastEventCard';
 import BottomNav from '@/components/BottomNav';
 
 const COLORS = {

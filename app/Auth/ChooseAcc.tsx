@@ -17,7 +17,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 // Asset Imports
-const appLogo = require('../assets/images/logo.png'); // App logo at the top of the card
+const appLogo = require('../../assets/images/logo.png'); // App logo at the top of the card
 
 // --- Color Constants ---
 const COLORS = {
