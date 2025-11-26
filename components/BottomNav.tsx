@@ -19,8 +19,8 @@ type TabName = 'home' | 'shop' | 'leaderboard' | 'notifications' | 'events';
 // Define tabs with updated paths to match your Expo Router routes
 const tabs = [
   { name: 'Home', tab: 'home' as TabName, Icon: Home, path: '/Feeds/NationalFeed' },
-  { name: 'Shop', tab: 'shop' as TabName, Icon: ShoppingBag, path: '/Feeds/NationalFeed' }, // Placeholder
-  { name: 'Leaderboard', tab: 'leaderboard' as TabName, Icon: Award, path: '/Feeds/NationalFeed' }, // Placeholder
+  { name: 'Shop', tab: 'shop' as TabName, Icon: ShoppingBag, path: '/Shopping/Marketplace' }, // Placeholder
+  { name: 'Leaderboard', tab: 'leaderboard' as TabName, Icon: Award, path: '/LeaderBoard' }, // Placeholder
   { name: 'Notifications', tab: 'notifications' as TabName, Icon: Bell, path: '/Feeds/Notification' },
   { name: 'Events', tab: 'events' as TabName, Icon: Calendar, path: '/Events/UpcomingEvent' },
 ];

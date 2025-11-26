@@ -14,6 +14,7 @@ import {
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
+import BottomNav from '@/components/BottomNav'; // Assuming BottomNav.tsx is in the same directory; adjust path if needed
 
 const COLORS = {
     black: '#000000',
@@ -80,6 +81,7 @@ export default function MarketplaceScreen() {
     const [showCartModal, setShowCartModal] = useState(false);
     const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
     const [searchQuery, setSearchQuery] = useState('');
+    const [activeTab, setActiveTab] = useState<'home' | 'shop' | 'leaderboard' | 'notifications' | 'events'>('shop');
 
     const handleAddToCart = (product: Product) => {
         setSelectedProduct(product);
@@ -88,6 +90,11 @@ export default function MarketplaceScreen() {
 
     const handleQuickShop = (product: Product) => {
         console.log('Quick shop:', product.name);
+    };
+
+    const onTabPress = (path: string, tab: 'home' | 'shop' | 'leaderboard' | 'notifications' | 'events') => {
+        setActiveTab(tab);
+        router.push(path as any); // Cast to 'any' to bypass Expo Router's strict typing
     };
 
     const renderProduct = (product: Product, index: number) => (
@@ -207,35 +214,7 @@ export default function MarketplaceScreen() {
             </ScrollView>
 
             {/* Bottom Navigation */}
-            <View style={styles.bottomNav}>
-                <TouchableOpacity style={styles.navItem}>
-                    <Ionicons name="home-outline" size={24} color={COLORS.darkText} />
-                    <Text style={styles.navText}>Home</Text>
-                </TouchableOpacity>
-
-                <TouchableOpacity style={[styles.navItem, styles.navItemActive]}>
-                    <Ionicons name="bag" size={24} color={COLORS.goldMid} />
-                    <Text style={[styles.navText, styles.navTextActive]}>Shop</Text>
-                </TouchableOpacity>
-
-                <TouchableOpacity
-                    style={styles.navItem}
-                    onPress={() => router.push('/customScreens/Leaderboard')}
-                >
-                    <Ionicons name="trophy-outline" size={24} color={COLORS.darkText} />
-                    <Text style={styles.navText}>Leaderboard</Text>
-                </TouchableOpacity>
-
-                <TouchableOpacity style={styles.navItem}>
-                    <Ionicons name="notifications-outline" size={24} color={COLORS.darkText} />
-                    <Text style={styles.navText}>Notifications</Text>
-                </TouchableOpacity>
-
-                <TouchableOpacity style={styles.navItem}>
-                    <Ionicons name="calendar-outline" size={24} color={COLORS.darkText} />
-                    <Text style={styles.navText}>Events</Text>
-                </TouchableOpacity>
-            </View>
+            <BottomNav activeTab={activeTab} onTabPress={onTabPress} />
 
             {/* Add to Cart Modal */}
             <Modal
@@ -501,40 +480,6 @@ const styles = StyleSheet.create({
         fontSize: 12,
         fontWeight: '600',
         color: COLORS.darkText,
-    },
-    bottomNav: {
-        position: 'absolute',
-        bottom: 0,
-        left: 0,
-        right: 0,
-        flexDirection: 'row',
-        justifyContent: 'space-around',
-        alignItems: 'center',
-        backgroundColor: COLORS.white,
-        paddingVertical: 12,
-        paddingBottom: 20,
-        borderTopWidth: 1,
-        borderTopColor: '#E5E5E5',
-        shadowColor: COLORS.black,
-        shadowOffset: { width: 0, height: -2 },
-        shadowOpacity: 0.1,
-        shadowRadius: 4,
-        elevation: 8,
-    },
-    navItem: {
-        alignItems: 'center',
-        justifyContent: 'center',
-        paddingVertical: 4,
-    },
-    navItemActive: {},
-    navText: {
-        fontSize: 11,
-        color: COLORS.darkText,
-        marginTop: 4,
-    },
-    navTextActive: {
-        color: COLORS.goldMid,
-        fontWeight: '600',
     },
     modalOverlay: {
         flex: 1,
