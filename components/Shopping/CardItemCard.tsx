@@ -1,61 +1,135 @@
-import { Trash2, Minus, Plus } from 'lucide-react-native';
+import React from 'react';
+import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
+import { Trash2, Plus, Minus } from 'lucide-react-native';
 
-interface CartItem {
+const COLORS = {
+  black: '#000000',
+  white: '#FFFFFF',
+  goldMid: '#FFC72C',
+  goldDark: '#B8860B',
+  darkText: '#000000',
+  greyText: '#999999',
+  lightGrey: '#F5F5F5',
+  borderGrey: '#E0E0E0',
+};
+
+export interface CartItem {
   id: string;
-  product_name: string;
-  product_image: string;
+  name: string;
+  code: string;
   price: number;
   quantity: number;
+  imageUri: string;
 }
 
 interface CartItemCardProps {
   item: CartItem;
-  onUpdateQuantity: (id: string, quantity: number) => void;
+  onQuantityChange: (id: string, change: number) => void;
   onRemove: (id: string) => void;
 }
 
-export function CartItemCard({ item, onUpdateQuantity, onRemove }: CartItemCardProps) {
+export default function CartItemCard({ item, onQuantityChange, onRemove }: CartItemCardProps) {
   return (
-    <div className="bg-white border border-gray-200 rounded-lg p-4 flex gap-4 shadow-sm">
-      <div className="w-24 h-24 bg-gray-100 rounded-lg overflow-hidden flex-shrink-0">
-        <img
-          src={item.product_image}
-          alt={item.product_name}
-          className="w-full h-full object-cover"
-        />
-      </div>
+    <View style={styles.card}>
+      <Image source={{ uri: item.imageUri }} style={styles.image} />
 
-      <div className="flex-1 flex flex-col justify-between">
-        <div>
-          <h3 className="text-gray-900 font-medium mb-1">{item.product_name}</h3>
-          <p className="text-yellow-600 font-bold text-lg">${item.price.toFixed(2)}</p>
-        </div>
+      <View style={styles.detailsContainer}>
+        <Text style={styles.name} numberOfLines={2}>{item.name}</Text>
+        <Text style={styles.code}>{item.code}</Text>
 
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3 bg-gray-100 rounded-lg px-3 py-1.5">
-            <button
-              onClick={() => onUpdateQuantity(item.id, Math.max(1, item.quantity - 1))}
-              className="text-yellow-600 hover:text-yellow-700 transition-colors"
+        <View style={styles.bottomRow}>
+          <Text style={styles.price}>${item.price.toFixed(2)}</Text>
+
+          <View style={styles.quantityContainer}>
+            <TouchableOpacity
+              style={styles.quantityButton}
+              onPress={() => onQuantityChange(item.id, -1)}
+              disabled={item.quantity <= 1}
             >
-              <Minus size={16} />
-            </button>
-            <span className="text-gray-900 w-8 text-center font-medium">{item.quantity}</span>
-            <button
-              onClick={() => onUpdateQuantity(item.id, item.quantity + 1)}
-              className="text-yellow-600 hover:text-yellow-700 transition-colors"
-            >
-              <Plus size={16} />
-            </button>
-          </div>
+              <Minus size={16} color={item.quantity <= 1 ? COLORS.greyText : COLORS.darkText} />
+            </TouchableOpacity>
 
-          <button
-            onClick={() => onRemove(item.id)}
-            className="text-red-500 hover:text-red-600 transition-colors p-2"
-          >
-            <Trash2 size={20} />
-          </button>
-        </div>
-      </div>
-    </div>
+            <Text style={styles.quantity}>{item.quantity}</Text>
+
+            <TouchableOpacity
+              style={styles.quantityButton}
+              onPress={() => onQuantityChange(item.id, 1)}
+            >
+              <Plus size={16} color={COLORS.darkText} />
+            </TouchableOpacity>
+          </View>
+        </View>
+      </View>
+
+      <TouchableOpacity
+        style={styles.deleteButton}
+        onPress={() => onRemove(item.id)}
+      >
+        <Trash2 size={20} color={COLORS.greyText} />
+      </TouchableOpacity>
+    </View>
   );
 }
+
+const styles = StyleSheet.create({
+  card: {
+    flexDirection: 'row',
+    backgroundColor: COLORS.white,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: COLORS.borderGrey,
+    padding: 12,
+    marginBottom: 12,
+  },
+  image: {
+    width: 80,
+    height: 80,
+    borderRadius: 8,
+    backgroundColor: COLORS.lightGrey,
+  },
+  detailsContainer: {
+    flex: 1,
+    marginLeft: 12,
+    justifyContent: 'space-between',
+  },
+  name: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: COLORS.darkText,
+    marginBottom: 4,
+  },
+  code: {
+    fontSize: 12,
+    color: COLORS.greyText,
+    marginBottom: 8,
+  },
+  bottomRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  price: {
+    fontSize: 18,
+    fontWeight: '700',
+    color: COLORS.darkText,
+  },
+  quantityContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: COLORS.lightGrey,
+    borderRadius: 20,
+    paddingHorizontal: 4,
+  },
+  quantityButton: {
+    padding: 6,
+  },
+  quantity: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: COLORS.darkText,
+    marginHorizontal: 12,
+  },
+  deleteButton: {
+    padding: 8,
+  },
+});

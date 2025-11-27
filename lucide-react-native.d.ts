@@ -270,4 +270,5 @@ declare module 'lucide-react-native' {
   export const Mailbox: Icon;
   export const CalendarCheck: Icon;
   export const UserCheck: Icon;
+  export const CheckCircle2: Icon;
 }

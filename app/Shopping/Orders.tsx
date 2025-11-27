@@ -1,163 +1,202 @@
-import { useState } from 'react';
-import { Package, ArrowLeft } from 'lucide-react-native';
-import { OrderCard } from '@/components/Shopping/OrderCard';
+import React from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  SafeAreaView,
+  ScrollView,
+  TouchableOpacity,
+  StatusBar,
+} from 'react-native';
 import { router } from 'expo-router';
+import { ArrowLeft, Package } from 'lucide-react-native';
+import OrderCard, { Order } from '@/components/Shopping/OrderCard';
 
-interface OrderItem {
-  id: string;
-  product_name: string;
-  product_image: string;
-  price: number;
-  quantity: number;
-}
+const COLORS = {
+  black: '#000000',
+  white: '#FFFFFF',
+  goldMid: '#FFC72C',
+  goldDark: '#B8860B',
+  darkText: '#000000',
+  greyText: '#999999',
+  lightGrey: '#F5F5F5',
+  borderGrey: '#E0E0E0',
+};
 
-interface Order {
-  id: string;
-  order_number: string;
-  total_amount: number;
-  status: string;
-  created_at: string;
-}
-
-interface OrdersProps {
-  onNavigate: (page: string, orderId?: string) => void;
-}
-
-const INITIAL_ORDERS: Array<{ order: Order; items: OrderItem[] }> = [
+const ORDERS_DATA: Order[] = [
   {
-    order: {
-      id: 'order1',
-      order_number: 'ORD20251126001',
-      total_amount: 139.45,
-      status: 'delivered',
-      created_at: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000).toISOString(),
-    },
+    id: '1',
+    orderNumber: 'LN2024001',
+    date: 'Nov 25, 2024',
+    total: 98.75,
+    status: 'Shipped',
     items: [
       {
-        id: 'item1',
-        product_name: 'Leather Slim Wallet',
-        product_image: 'https://images.pexels.com/photos/5632399/pexels-photo-5632399.jpeg?auto=compress&cs=tinysrgb&w=400',
-        price: 12.95,
-        quantity: 1,
-      },
-      {
-        id: 'item2',
-        product_name: "Women's Cardigan Wrap",
-        product_image: 'https://images.pexels.com/photos/2959199/pexels-photo-2959199.jpeg?auto=compress&cs=tinysrgb&w=400',
-        price: 54.95,
-        quantity: 1,
-      },
-      {
-        id: 'item3',
-        product_name: "Women's Credit Card Holder",
-        product_image: 'https://images.pexels.com/photos/5632399/pexels-photo-5632399.jpeg?auto=compress&cs=tinysrgb&w=400',
-        price: 12.95,
+        id: '1',
+        name: 'LEATHER SLIM WALLET',
+        imageUri: 'https://placehold.co/150x150/333/FFF?text=Wallet',
         quantity: 2,
+      },
+      {
+        id: '2',
+        name: 'WOMENS CARDIGAN WRAP',
+        imageUri: 'https://placehold.co/150x150/666/FFF?text=Cardigan',
+        quantity: 1,
       },
     ],
   },
   {
-    order: {
-      id: 'order2',
-      order_number: 'ORD20251124001',
-      total_amount: 67.90,
-      status: 'shipped',
-      created_at: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(),
-    },
+    id: '2',
+    orderNumber: 'LN2024002',
+    date: 'Nov 20, 2024',
+    total: 156.80,
+    status: 'Delivered',
     items: [
       {
-        id: 'item4',
-        product_name: "Men's Winter Scarf",
-        product_image: 'https://images.pexels.com/photos/3621881/pexels-photo-3621881.jpeg?auto=compress&cs=tinysrgb&w=400',
-        price: 18.95,
-        quantity: 1,
-      },
-      {
-        id: 'item5',
-        product_name: 'Wool Beanie Hat',
-        product_image: 'https://images.pexels.com/photos/3661134/pexels-photo-3661134.jpeg?auto=compress&cs=tinysrgb&w=400',
-        price: 9.95,
+        id: '3',
+        name: 'WOMENS CREDIT CARD HOLDER WALLET',
+        imageUri: 'https://placehold.co/150x150/999/FFF?text=Holder',
         quantity: 3,
       },
+      {
+        id: '4',
+        name: 'LIONS WINTER SCARF',
+        imageUri: 'https://placehold.co/150x150/1E90FF/FFF?text=Scarf',
+        quantity: 4,
+      },
+      {
+        id: '5',
+        name: 'LEATHER BELT',
+        imageUri: 'https://placehold.co/150x150/8B4513/FFF?text=Belt',
+        quantity: 1,
+      },
     ],
   },
   {
-    order: {
-      id: 'order3',
-      order_number: 'ORD20251122001',
-      total_amount: 89.85,
-      status: 'processing',
-      created_at: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(),
-    },
+    id: '3',
+    orderNumber: 'LN2024003',
+    date: 'Nov 15, 2024',
+    total: 45.90,
+    status: 'Processing',
     items: [
       {
-        id: 'item6',
-        product_name: 'Leather Belt',
-        product_image: 'https://images.pexels.com/photos/5632399/pexels-photo-5632399.jpeg?auto=compress&cs=tinysrgb&w=400',
-        price: 24.95,
-        quantity: 2,
+        id: '6',
+        name: 'LIONS CAP',
+        imageUri: 'https://placehold.co/150x150/FF6347/FFF?text=Cap',
+        quantity: 1,
+      },
+    ],
+  },
+  {
+    id: '4',
+    orderNumber: 'LN2024004',
+    date: 'Nov 10, 2024',
+    total: 234.50,
+    status: 'Delivered',
+    items: [
+      {
+        id: '7',
+        name: 'LEATHER JACKET',
+        imageUri: 'https://placehold.co/150x150/2F4F4F/FFF?text=Jacket',
+        quantity: 1,
       },
       {
-        id: 'item7',
-        product_name: 'Silk Scarf',
-        product_image: 'https://images.pexels.com/photos/3621881/pexels-photo-3621881.jpeg?auto=compress&cs=tinysrgb&w=400',
-        price: 19.95,
+        id: '8',
+        name: 'DRESS SHOES',
+        imageUri: 'https://placehold.co/150x150/654321/FFF?text=Shoes',
         quantity: 1,
       },
     ],
   },
 ];
 
-export function Orders({ onNavigate }: OrdersProps) {
-  const [orders] = useState(INITIAL_ORDERS);
+export default function OrderHistoryScreen() {
+  const handleTrackOrder = (orderId: string) => {
+    router.push(`/Shopping/TrackStatus?orderId=${orderId}`);
+  };
 
   return (
-    <div className="min-h-screen bg-white">
-      <div className="max-w-2xl mx-auto">
-        <div className="bg-white border-b border-gray-200 sticky top-0 z-10">
-          <div className="p-4 flex items-center gap-4">
-            <button
-              onClick={() => onNavigate('main')}
-              className="text-yellow-600 hover:text-yellow-700"
-            >
-              <ArrowLeft size={24} />
-            </button>
-            <h1 className="text-gray-900 text-xl font-bold flex items-center gap-2">
-              <Package size={24} />
-              Order History
-            </h1>
-          </div>
-        </div>
+    <SafeAreaView style={styles.container}>
+      <StatusBar barStyle="dark-content" backgroundColor={COLORS.white} />
 
-        {orders.length === 0 ? (
-          <div className="flex flex-col items-center justify-center py-20 px-4">
-<Package
-  size={64}
-  color="#D1D5DB" // gray-300 hex
-  style={{ marginBottom: 16 }} // mb-4 -> 16px
-/>
-            <p className="text-gray-500 text-lg mb-2">No orders yet</p>
-            <p className="text-gray-600 text-sm mb-6">Start shopping to see your orders here</p>
-            <button
-              onClick={() => onNavigate('main')}
-              className="bg-yellow-500 text-white px-6 py-3 rounded-lg font-bold hover:bg-yellow-600 transition-colors"
-            >
-              Start Shopping
-            </button>
-          </div>
-        ) : (
-          <div className="p-4 space-y-4">
-            {orders.map(({ order, items }) => (
+      <View style={styles.header}>
+        <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
+          <ArrowLeft size={24} color={COLORS.darkText} />
+        </TouchableOpacity>
+        <Text style={styles.headerTitle}>Order History</Text>
+        <View style={styles.placeholder} />
+      </View>
+
+      {ORDERS_DATA.length === 0 ? (
+        <View style={styles.emptyContainer}>
+          <Package size={64} color={COLORS.greyText} />
+          <Text style={styles.emptyTitle}>No orders yet</Text>
+          <Text style={styles.emptySubtitle}>Your order history will appear here</Text>
+        </View>
+      ) : (
+        <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
+          <View style={styles.ordersContainer}>
+            {ORDERS_DATA.map(order => (
               <OrderCard
                 key={order.id}
                 order={order}
-                items={items}
-                onTrack={(orderId) => onNavigate('tracking', orderId)}
+                onTrackOrder={handleTrackOrder}
               />
             ))}
-          </div>
-        )}
-      </div>
-    </div>
+          </View>
+          <View style={{ height: 20 }} />
+        </ScrollView>
+      )}
+    </SafeAreaView>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: COLORS.white,
+  },
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 16,
+    paddingVertical: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: COLORS.borderGrey,
+  },
+  backButton: {
+    padding: 4,
+  },
+  headerTitle: {
+    fontSize: 18,
+    fontWeight: '700',
+    color: COLORS.darkText,
+  },
+  placeholder: {
+    width: 32,
+  },
+  scrollView: {
+    flex: 1,
+  },
+  ordersContainer: {
+    padding: 16,
+  },
+  emptyContainer: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: 32,
+  },
+  emptyTitle: {
+    fontSize: 20,
+    fontWeight: '700',
+    color: COLORS.darkText,
+    marginTop: 24,
+    marginBottom: 8,
+  },
+  emptySubtitle: {
+    fontSize: 14,
+    color: COLORS.greyText,
+  },
+});

@@ -1,270 +1,403 @@
-import { ArrowLeft, Package, Truck, CheckCircle } from 'lucide-react-native';
-import { router } from 'expo-router';
-interface OrderItem {
-  id: string;
-  product_name: string;
-  product_image: string;
-  price: number;
-  quantity: number;
-}
+import React from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  SafeAreaView,
+  ScrollView,
+  TouchableOpacity,
+  StatusBar,
+} from 'react-native';
+import { router, useLocalSearchParams } from 'expo-router';
+import { ArrowLeft, CheckCircle2, Circle, Package, Truck, Home } from 'lucide-react-native';
 
-interface Order {
-  id: string;
-  order_number: string;
-  total_amount: number;
-  status: string;
-  created_at: string;
-}
+const COLORS = {
+  black: '#000000',
+  white: '#FFFFFF',
+  goldMid: '#FFC72C',
+  goldDark: '#B8860B',
+  darkText: '#000000',
+  greyText: '#999999',
+  lightGrey: '#F5F5F5',
+  borderGrey: '#E0E0E0',
+  success: '#4CAF50',
+};
 
-interface TrackingEvent {
+interface TrackingStep {
   id: string;
-  status: string;
+  title: string;
   description: string;
-  timestamp: string;
+  date: string;
+  time: string;
+  completed: boolean;
+  icon: 'package' | 'truck' | 'home';
 }
 
-interface TrackingProps {
-  orderId: string;
-  onNavigate: (page: string) => void;
-}
-
-const TRACKING_DATA: Record<string, { order: Order; items: OrderItem[]; events: TrackingEvent[] }> = {
-  order1: {
-    order: {
-      id: 'order1',
-      order_number: 'ORD20251126001',
-      total_amount: 139.45,
-      status: 'delivered',
-      created_at: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000).toISOString(),
+const TRACKING_DATA: Record<string, TrackingStep[]> = {
+  '1': [
+    {
+      id: '1',
+      title: 'Order Placed',
+      description: 'Your order has been confirmed',
+      date: 'Nov 25, 2024',
+      time: '10:30 AM',
+      completed: true,
+      icon: 'package',
     },
-    items: [
-      {
-        id: 'item1',
-        product_name: 'Leather Slim Wallet',
-        product_image: 'https://images.pexels.com/photos/5632399/pexels-photo-5632399.jpeg?auto=compress&cs=tinysrgb&w=400',
-        price: 12.95,
-        quantity: 1,
-      },
-      {
-        id: 'item2',
-        product_name: "Women's Cardigan Wrap",
-        product_image: 'https://images.pexels.com/photos/2959199/pexels-photo-2959199.jpeg?auto=compress&cs=tinysrgb&w=400',
-        price: 54.95,
-        quantity: 1,
-      },
-    ],
-    events: [
-      {
-        id: 'event1',
-        status: 'pending',
-        description: 'Order placed successfully',
-        timestamp: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000).toISOString(),
-      },
-      {
-        id: 'event2',
-        status: 'processing',
-        description: 'Order is being processed',
-        timestamp: new Date(Date.now() - 9 * 24 * 60 * 60 * 1000).toISOString(),
-      },
-      {
-        id: 'event3',
-        status: 'shipped',
-        description: 'Package shipped with tracking ID: 1234567890',
-        timestamp: new Date(Date.now() - 6 * 24 * 60 * 60 * 1000).toISOString(),
-      },
-      {
-        id: 'event4',
-        status: 'delivered',
-        description: 'Package delivered successfully',
-        timestamp: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
-      },
-    ],
-  },
-  order2: {
-    order: {
-      id: 'order2',
-      order_number: 'ORD20251124001',
-      total_amount: 67.90,
-      status: 'shipped',
-      created_at: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(),
+    {
+      id: '2',
+      title: 'Order Packed',
+      description: 'Your items have been packed',
+      date: 'Nov 25, 2024',
+      time: '2:15 PM',
+      completed: true,
+      icon: 'package',
     },
-    items: [
-      {
-        id: 'item4',
-        product_name: "Men's Winter Scarf",
-        product_image: 'https://images.pexels.com/photos/3621881/pexels-photo-3621881.jpeg?auto=compress&cs=tinysrgb&w=400',
-        price: 18.95,
-        quantity: 1,
-      },
-    ],
-    events: [
-      {
-        id: 'event5',
-        status: 'pending',
-        description: 'Order placed successfully',
-        timestamp: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(),
-      },
-      {
-        id: 'event6',
-        status: 'processing',
-        description: 'Order is being processed',
-        timestamp: new Date(Date.now() - 2.5 * 24 * 60 * 60 * 1000).toISOString(),
-      },
-      {
-        id: 'event7',
-        status: 'shipped',
-        description: 'Package shipped with tracking ID: 0987654321',
-        timestamp: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
-      },
-    ],
-  },
-  order3: {
-    order: {
-      id: 'order3',
-      order_number: 'ORD20251122001',
-      total_amount: 89.85,
-      status: 'processing',
-      created_at: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(),
+    {
+      id: '3',
+      title: 'Out for Delivery',
+      description: 'Your order is on the way',
+      date: 'Nov 27, 2024',
+      time: '8:00 AM',
+      completed: true,
+      icon: 'truck',
     },
-    items: [
-      {
-        id: 'item6',
-        product_name: 'Leather Belt',
-        product_image: 'https://images.pexels.com/photos/5632399/pexels-photo-5632399.jpeg?auto=compress&cs=tinysrgb&w=400',
-        price: 24.95,
-        quantity: 2,
-      },
-    ],
-    events: [
-      {
-        id: 'event8',
-        status: 'pending',
-        description: 'Order placed successfully',
-        timestamp: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(),
-      },
-      {
-        id: 'event9',
-        status: 'processing',
-        description: 'Order is being processed',
-        timestamp: new Date(Date.now() - 4 * 24 * 60 * 60 * 1000).toISOString(),
-      },
-    ],
-  },
+    {
+      id: '4',
+      title: 'Delivered',
+      description: 'Expected delivery today',
+      date: 'Nov 27, 2024',
+      time: 'Est. 5:00 PM',
+      completed: false,
+      icon: 'home',
+    },
+  ],
+  '2': [
+    {
+      id: '1',
+      title: 'Order Placed',
+      description: 'Your order has been confirmed',
+      date: 'Nov 20, 2024',
+      time: '11:20 AM',
+      completed: true,
+      icon: 'package',
+    },
+    {
+      id: '2',
+      title: 'Order Packed',
+      description: 'Your items have been packed',
+      date: 'Nov 20, 2024',
+      time: '3:45 PM',
+      completed: true,
+      icon: 'package',
+    },
+    {
+      id: '3',
+      title: 'Out for Delivery',
+      description: 'Your order is on the way',
+      date: 'Nov 22, 2024',
+      time: '9:15 AM',
+      completed: true,
+      icon: 'truck',
+    },
+    {
+      id: '4',
+      title: 'Delivered',
+      description: 'Package delivered successfully',
+      date: 'Nov 22, 2024',
+      time: '4:30 PM',
+      completed: true,
+      icon: 'home',
+    },
+  ],
+  '3': [
+    {
+      id: '1',
+      title: 'Order Placed',
+      description: 'Your order has been confirmed',
+      date: 'Nov 15, 2024',
+      time: '9:45 AM',
+      completed: true,
+      icon: 'package',
+    },
+    {
+      id: '2',
+      title: 'Order Packed',
+      description: 'Preparing your items',
+      date: 'Est. Nov 28, 2024',
+      time: 'Pending',
+      completed: false,
+      icon: 'package',
+    },
+    {
+      id: '3',
+      title: 'Out for Delivery',
+      description: 'Waiting for shipment',
+      date: 'Est. Nov 29, 2024',
+      time: 'Pending',
+      completed: false,
+      icon: 'truck',
+    },
+    {
+      id: '4',
+      title: 'Delivered',
+      description: 'Estimated delivery',
+      date: 'Est. Nov 30, 2024',
+      time: 'Pending',
+      completed: false,
+      icon: 'home',
+    },
+  ],
 };
 
-export function Tracking({ orderId, onNavigate }: TrackingProps) {
-  const data = TRACKING_DATA[orderId];
-  const order = data?.order;
-  const items = data?.items || [];
-  const trackingEvents = data?.events || [];
+export default function TrackStatusScreen() {
+  const params = useLocalSearchParams();
+  const orderId = params.orderId as string || '1';
+  const trackingSteps = TRACKING_DATA[orderId] || TRACKING_DATA['1'];
 
-  const getStatusIcon = (status: string) => {
-  switch (status) {
-    case 'delivered':
-      return <CheckCircle size={24} color="#16A34A" />; // green-600
-    case 'shipped':
-      return <Truck size={24} color="#7C3AED" />; // purple-600
-    case 'processing':
-      return <Package size={24} color="#3B82F6" />; // blue-600
-    default:
-      return <CheckCircle size={24} color="#CA8A04" />; // yellow-600
-  }
-};
+  const getIcon = (iconType: string, completed: boolean) => {
+    const color = completed ? COLORS.success : COLORS.greyText;
+    const size = 24;
 
-
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleString('en-US', {
-      month: 'short',
-      day: 'numeric',
-      hour: 'numeric',
-      minute: '2-digit',
-      hour12: true,
-    });
+    switch (iconType) {
+      case 'package':
+        return <Package size={size} color={color} />;
+      case 'truck':
+        return <Truck size={size} color={color} />;
+      case 'home':
+        return <Home size={size} color={color} />;
+      default:
+        return <Circle size={size} color={color} />;
+    }
   };
 
-  if (!order) {
-    return (
-      <div className="min-h-screen bg-white flex items-center justify-center">
-        <div className="text-gray-600">Order not found</div>
-      </div>
-    );
-  }
-
   return (
-    <div className="min-h-screen bg-white">
-      <div className="max-w-2xl mx-auto">
-        <div className="bg-white border-b border-gray-200 sticky top-0 z-10">
-          <div className="p-4 flex items-center gap-4">
-            <button
-              onClick={() => onNavigate('orders')}
-              className="text-yellow-600 hover:text-yellow-700"
-            >
-              <ArrowLeft size={24} />
-            </button>
-            <h1 className="text-gray-900 text-xl font-bold">Track Order</h1>
-          </div>
-        </div>
+    <SafeAreaView style={styles.container}>
+      <StatusBar barStyle="dark-content" backgroundColor={COLORS.white} />
 
-        <div className="p-4 space-y-6">
-          <div className="bg-white border border-gray-200 rounded-lg p-4 shadow-sm">
-            <div className="flex justify-between items-start mb-4">
-              <div>
-                <p className="text-gray-600 text-sm">Order Number</p>
-                <p className="text-gray-900 font-bold text-lg">{order.order_number}</p>
-              </div>
-              <div className="text-right">
-                <p className="text-gray-600 text-sm">Total Amount</p>
-                <p className="text-yellow-600 font-bold text-lg">${order.total_amount.toFixed(2)}</p>
-              </div>
-            </div>
+      <View style={styles.header}>
+        <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
+          <ArrowLeft size={24} color={COLORS.darkText} />
+        </TouchableOpacity>
+        <Text style={styles.headerTitle}>Track Order</Text>
+        <View style={styles.placeholder} />
+      </View>
 
-            <div className="pt-4 border-t border-gray-200">
-              <p className="text-gray-600 text-sm mb-2">Order Items</p>
-              <div className="space-y-2">
-                {items.map(item => (
-                  <div key={item.id} className="flex items-center gap-3">
-                    <div className="w-12 h-12 bg-gray-100 rounded-lg overflow-hidden flex-shrink-0">
-                      <img
-                        src={item.product_image}
-                        alt={item.product_name}
-                        className="w-full h-full object-cover"
-                      />
-                    </div>
-                    <div className="flex-1">
-                      <p className="text-gray-900 text-sm font-medium">{item.product_name}</p>
-                      <p className="text-gray-600 text-xs">Qty: {item.quantity}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
+      <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
+        <View style={styles.orderInfoCard}>
+          <Text style={styles.orderNumber}>Order #LN202400{orderId}</Text>
+          <Text style={styles.estimatedDelivery}>
+            Estimated Delivery: {trackingSteps[trackingSteps.length - 1].date}
+          </Text>
+        </View>
 
-          <div className="bg-white border border-gray-200 rounded-lg p-4 shadow-sm">
-            <h2 className="text-gray-900 font-bold text-lg mb-6">Tracking History</h2>
-            <div className="space-y-6">
-              {trackingEvents.map((event, index) => {
-                const isLast = index === trackingEvents.length - 1;
-                return (
-                  <div key={event.id} className="flex gap-4">
-                    <div className="flex flex-col items-center">
-                      {getStatusIcon(event.status)}
-                      {!isLast && (
-                        <div className="w-0.5 h-12 bg-gray-300 my-2"></div>
-                      )}
-                    </div>
-                    <div className="flex-1 pb-2">
-                      <p className="text-gray-900 font-medium capitalize mb-1">{event.status}</p>
-                      <p className="text-gray-600 text-sm mb-2">{event.description}</p>
-                      <p className="text-gray-500 text-xs">{formatDate(event.timestamp)}</p>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+        <View style={styles.trackingContainer}>
+          {trackingSteps.map((step, index) => (
+            <View key={step.id} style={styles.trackingStep}>
+              <View style={styles.timelineContainer}>
+                <View
+                  style={[
+                    styles.iconCircle,
+                    step.completed && styles.iconCircleCompleted,
+                  ]}
+                >
+                  {getIcon(step.icon, step.completed)}
+                </View>
+                {index < trackingSteps.length - 1 && (
+                  <View
+                    style={[
+                      styles.timelineLine,
+                      step.completed && styles.timelineLineCompleted,
+                    ]}
+                  />
+                )}
+              </View>
+
+              <View style={styles.stepContent}>
+                <View style={styles.stepHeader}>
+                  <Text
+                    style={[
+                      styles.stepTitle,
+                      step.completed && styles.stepTitleCompleted,
+                    ]}
+                  >
+                    {step.title}
+                  </Text>
+                  {step.completed && (
+                    <CheckCircle2 size={20} color={COLORS.success} />
+                  )}
+                </View>
+                <Text style={styles.stepDescription}>{step.description}</Text>
+                <View style={styles.stepDateTime}>
+                  <Text style={styles.stepDate}>{step.date}</Text>
+                  <Text style={styles.stepTime}>{step.time}</Text>
+                </View>
+              </View>
+            </View>
+          ))}
+        </View>
+
+        <View style={styles.supportCard}>
+          <Text style={styles.supportTitle}>Need Help?</Text>
+          <Text style={styles.supportDescription}>
+            Contact our support team for any questions about your order
+          </Text>
+          <TouchableOpacity style={styles.supportButton}>
+            <Text style={styles.supportButtonText}>Contact Support</Text>
+          </TouchableOpacity>
+        </View>
+
+        <View style={{ height: 20 }} />
+      </ScrollView>
+    </SafeAreaView>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: COLORS.white,
+  },
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 16,
+    paddingVertical: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: COLORS.borderGrey,
+  },
+  backButton: {
+    padding: 4,
+  },
+  headerTitle: {
+    fontSize: 18,
+    fontWeight: '700',
+    color: COLORS.darkText,
+  },
+  placeholder: {
+    width: 32,
+  },
+  scrollView: {
+    flex: 1,
+  },
+  orderInfoCard: {
+    backgroundColor: COLORS.lightGrey,
+    margin: 16,
+    padding: 16,
+    borderRadius: 12,
+  },
+  orderNumber: {
+    fontSize: 18,
+    fontWeight: '700',
+    color: COLORS.darkText,
+    marginBottom: 8,
+  },
+  estimatedDelivery: {
+    fontSize: 14,
+    color: COLORS.greyText,
+  },
+  trackingContainer: {
+    paddingHorizontal: 16,
+    paddingTop: 8,
+  },
+  trackingStep: {
+    flexDirection: 'row',
+    marginBottom: 8,
+  },
+  timelineContainer: {
+    alignItems: 'center',
+    marginRight: 16,
+  },
+  iconCircle: {
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    backgroundColor: COLORS.lightGrey,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: 2,
+    borderColor: COLORS.borderGrey,
+  },
+  iconCircleCompleted: {
+    backgroundColor: '#E8F5E9',
+    borderColor: COLORS.success,
+  },
+  timelineLine: {
+    width: 2,
+    flex: 1,
+    backgroundColor: COLORS.borderGrey,
+    marginTop: 4,
+    marginBottom: 4,
+  },
+  timelineLineCompleted: {
+    backgroundColor: COLORS.success,
+  },
+  stepContent: {
+    flex: 1,
+    paddingTop: 4,
+    paddingBottom: 20,
+  },
+  stepHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: 4,
+  },
+  stepTitle: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: COLORS.greyText,
+  },
+  stepTitleCompleted: {
+    color: COLORS.darkText,
+  },
+  stepDescription: {
+    fontSize: 14,
+    color: COLORS.greyText,
+    marginBottom: 8,
+  },
+  stepDateTime: {
+    flexDirection: 'row',
+    gap: 12,
+  },
+  stepDate: {
+    fontSize: 13,
+    fontWeight: '600',
+    color: COLORS.darkText,
+  },
+  stepTime: {
+    fontSize: 13,
+    color: COLORS.greyText,
+  },
+  supportCard: {
+    backgroundColor: COLORS.lightGrey,
+    margin: 16,
+    padding: 20,
+    borderRadius: 12,
+    alignItems: 'center',
+  },
+  supportTitle: {
+    fontSize: 18,
+    fontWeight: '700',
+    color: COLORS.darkText,
+    marginBottom: 8,
+  },
+  supportDescription: {
+    fontSize: 14,
+    color: COLORS.greyText,
+    textAlign: 'center',
+    marginBottom: 16,
+  },
+  supportButton: {
+    backgroundColor: COLORS.goldMid,
+    paddingHorizontal: 24,
+    paddingVertical: 12,
+    borderRadius: 20,
+  },
+  supportButtonText: {
+    fontSize: 14,
+    fontWeight: '700',
+    color: COLORS.darkText,
+  },
+});

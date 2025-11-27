@@ -1,99 +1,197 @@
-import { Package, ChevronRight } from 'lucide-react-native';
+import React from 'react';
+import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
+import { ChevronRight } from 'lucide-react-native';
 
-interface OrderItem {
-  id: string;
-  product_name: string;
-  product_image: string;
-  price: number;
-  quantity: number;
-}
+const COLORS = {
+  black: '#000000',
+  white: '#FFFFFF',
+  goldMid: '#FFC72C',
+  goldDark: '#B8860B',
+  darkText: '#000000',
+  greyText: '#999999',
+  lightGrey: '#F5F5F5',
+  borderGrey: '#E0E0E0',
+  success: '#4CAF50',
+};
 
-interface Order {
+export interface Order {
   id: string;
-  order_number: string;
-  total_amount: number;
-  status: string;
-  created_at: string;
+  orderNumber: string;
+  date: string;
+  total: number;
+  status: 'Processing' | 'Shipped' | 'Delivered' | 'Cancelled';
+  items: {
+    id: string;
+    name: string;
+    imageUri: string;
+    quantity: number;
+  }[];
 }
 
 interface OrderCardProps {
   order: Order;
-  items: OrderItem[];
-  onTrack: (orderId: string) => void;
+  onTrackOrder: (orderId: string) => void;
 }
 
-export function OrderCard({ order, items, onTrack }: OrderCardProps) {
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'pending':
-        return 'text-yellow-600';
-      case 'processing':
-        return 'text-blue-600';
-      case 'shipped':
-        return 'text-purple-600';
-      case 'delivered':
-        return 'text-green-600';
-      case 'cancelled':
-        return 'text-red-600';
+export default function OrderCard({ order, onTrackOrder }: OrderCardProps) {
+  const getStatusColor = () => {
+    switch (order.status) {
+      case 'Processing':
+        return COLORS.goldMid;
+      case 'Shipped':
+        return '#2196F3';
+      case 'Delivered':
+        return COLORS.success;
+      case 'Cancelled':
+        return '#F44336';
       default:
-        return 'text-gray-600';
+        return COLORS.greyText;
     }
   };
 
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('en-US', {
-      month: 'short',
-      day: 'numeric',
-      year: 'numeric',
-    });
-  };
-
   return (
-    <div className="bg-white border border-gray-200 rounded-lg overflow-hidden shadow-sm">
-      <div className="p-4 border-b border-gray-200">
-        <div className="flex justify-between items-start mb-2">
-          <div>
-            <p className="text-gray-600 text-sm">Order #{order.order_number}</p>
-            <p className="text-gray-500 text-xs mt-1">{formatDate(order.created_at)}</p>
-          </div>
-          <div className="text-right">
-            <p className="text-gray-900 font-bold text-lg">${order.total_amount.toFixed(2)}</p>
-            <p className={`text-sm font-medium capitalize ${getStatusColor(order.status)}`}>
-              {order.status}
-            </p>
-          </div>
-        </div>
-      </div>
+    <View style={styles.card}>
+      <View style={styles.header}>
+        <View>
+          <Text style={styles.orderNumber}>Order #{order.orderNumber}</Text>
+          <Text style={styles.date}>{order.date}</Text>
+        </View>
+        <View style={[styles.statusBadge, { backgroundColor: getStatusColor() }]}>
+          <Text style={styles.statusText}>{order.status}</Text>
+        </View>
+      </View>
 
-      <div className="p-4 space-y-3">
-        {items.slice(0, 2).map((item) => (
-          <div key={item.id} className="flex gap-3">
-            <div className="w-16 h-16 bg-gray-100 rounded-lg overflow-hidden flex-shrink-0">
-              <img
-                src={item.product_image}
-                alt={item.product_name}
-                className="w-full h-full object-cover"
-              />
-            </div>
-            <div className="flex-1">
-              <p className="text-gray-900 text-sm font-medium">{item.product_name}</p>
-              <p className="text-gray-600 text-xs mt-1">Qty: {item.quantity}</p>
-            </div>
-            <p className="text-yellow-600 text-sm font-medium">${item.price.toFixed(2)}</p>
-          </div>
+      <View style={styles.divider} />
+
+      <View style={styles.itemsContainer}>
+        {order.items.slice(0, 3).map((item, index) => (
+          <Image
+            key={item.id}
+            source={{ uri: item.imageUri }}
+            style={[styles.itemImage, index > 0 && { marginLeft: -10 }]}
+          />
         ))}
-        {items.length > 2 && (
-          <p className="text-gray-600 text-sm">+{items.length - 2} more items</p>
+        {order.items.length > 3 && (
+          <View style={styles.moreItems}>
+            <Text style={styles.moreItemsText}>+{order.items.length - 3}</Text>
+          </View>
         )}
-      </div>
+      </View>
 
-      <button
-        onClick={() => onTrack(order.id)}
-        className="w-full bg-gray-50 hover:bg-gray-100 transition-colors p-4 flex items-center justify-between text-yellow-600 font-medium border-t border-gray-200"
-      >
-        <span>Track Order</span>
-        <ChevronRight size={20} />
-      </button>
-    </div>
+      <View style={styles.footer}>
+        <View>
+          <Text style={styles.totalLabel}>Total Amount</Text>
+          <Text style={styles.totalAmount}>${order.total.toFixed(2)}</Text>
+        </View>
+
+        <TouchableOpacity
+          style={styles.trackButton}
+          onPress={() => onTrackOrder(order.id)}
+        >
+          <Text style={styles.trackButtonText}>Track Order</Text>
+          <ChevronRight size={16} color={COLORS.darkText} />
+        </TouchableOpacity>
+      </View>
+    </View>
   );
 }
+
+const styles = StyleSheet.create({
+  card: {
+    backgroundColor: COLORS.white,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: COLORS.borderGrey,
+    padding: 16,
+    marginBottom: 16,
+  },
+  header: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'flex-start',
+    marginBottom: 12,
+  },
+  orderNumber: {
+    fontSize: 16,
+    fontWeight: '700',
+    color: COLORS.darkText,
+    marginBottom: 4,
+  },
+  date: {
+    fontSize: 13,
+    color: COLORS.greyText,
+  },
+  statusBadge: {
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 12,
+  },
+  statusText: {
+    fontSize: 12,
+    fontWeight: '600',
+    color: COLORS.white,
+  },
+  divider: {
+    height: 1,
+    backgroundColor: COLORS.borderGrey,
+    marginVertical: 12,
+  },
+  itemsContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 12,
+  },
+  itemImage: {
+    width: 50,
+    height: 50,
+    borderRadius: 8,
+    backgroundColor: COLORS.lightGrey,
+    borderWidth: 2,
+    borderColor: COLORS.white,
+  },
+  moreItems: {
+    width: 50,
+    height: 50,
+    borderRadius: 8,
+    backgroundColor: COLORS.lightGrey,
+    marginLeft: -10,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: 2,
+    borderColor: COLORS.white,
+  },
+  moreItemsText: {
+    fontSize: 12,
+    fontWeight: '600',
+    color: COLORS.greyText,
+  },
+  footer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  totalLabel: {
+    fontSize: 13,
+    color: COLORS.greyText,
+    marginBottom: 4,
+  },
+  totalAmount: {
+    fontSize: 18,
+    fontWeight: '700',
+    color: COLORS.darkText,
+  },
+  trackButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: COLORS.goldMid,
+    paddingHorizontal: 16,
+    paddingVertical: 10,
+    borderRadius: 20,
+    gap: 4,
+  },
+  trackButtonText: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: COLORS.darkText,
+  },
+});

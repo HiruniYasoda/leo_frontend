@@ -167,7 +167,7 @@ export default function MarketplaceScreen() {
                         <Ionicons name="search" size={20} color={COLORS.darkText} />
                     </TouchableOpacity>
                 </View>
-                <TouchableOpacity style={styles.cartIcon}>
+                <TouchableOpacity style={styles.cartIcon} activeOpacity={0.7} onPress={() => router.push('/Shopping/Cart')}>
                     <Ionicons name="cart-outline" size={24} color={COLORS.darkText} />
                 </TouchableOpacity>
             </View>
