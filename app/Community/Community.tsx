@@ -40,7 +40,7 @@ export default function CommunityScreen() {
   // renamed `name` -> `districtName` so it matches CommunityCardProps
   const districtData = {
     districtName: '306 D01',
-    tagline: 'FIND A WAY OR MAKE A WAY',
+    tagline: 'FIND A WAY OR MAKE A WAY!',
     description:
       'Leo District 306 D1 is the Leo District that expands from Colombo City such areas as Port City, Kollupitiya, Wellawatte, Bambalapitiya and the West of Galle Road, Dehiwala, Mt. Lavinia, Moratuwa. Covering different portions of Kalutara, Panadura, Beruwala, Bentota, Balapitiya, Ambalangoda and other nearby divisions.',
     logoUrl:
