@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { router } from 'expo-router';
 import {
   View,
   Text,
@@ -49,11 +50,13 @@ export default function CommunityFeedPostCard({ post }: CommunityFeedPostCardPro
       {/* Header */}
       <View style={styles.header}>
         <View style={styles.authorInfo}>
+          <TouchableOpacity activeOpacity={0.8}onPress={() => router.push('/Profile/profile')} >
           <Image source={{ uri: post.authorImage }} style={styles.authorImage} />
           <View>
             <Text style={styles.authorName}>{post.authorName}</Text>
             <Text style={styles.authorPosition}>{post.authorPosition}</Text>
           </View>
+          </TouchableOpacity>
         </View>
         <TouchableOpacity onPress={() => setIsBookmarked(!isBookmarked)}>
           <Bookmark

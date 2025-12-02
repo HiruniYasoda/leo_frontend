@@ -1,6 +1,7 @@
 import ShareModal from '@/components/Feed/ShareModel'; // Import the separate ShareModal component
 import { Bookmark, Heart, MessageCircle, Share2 } from 'lucide-react-native';
 import React, { useState } from 'react';
+import { router } from 'expo-router';
 import {
   Image,
   ImageStyle,
@@ -110,11 +111,14 @@ const PostCard: React.FC<PostCardProps> = ({
     <View style={styles.cardContainer}>
       <View style={styles.header}>
         <View style={styles.userInfo}>
+          <TouchableOpacity activeOpacity={0.8}onPress={() => router.push('/Profile/profile')} >
           <Image
             source={{ uri: userAvatarUri || defaultAvatar }}
             style={styles.avatar}
             resizeMode="cover"
+
           />
+          </TouchableOpacity>
           <View style={styles.names}>
             <Text style={styles.userNameText} numberOfLines={1}>
               {userName}
