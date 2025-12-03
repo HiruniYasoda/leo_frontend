@@ -69,6 +69,7 @@ export default function EventRegistrationScreen() {
 
     const handleViewRegistrations = (eventId: string) => {
         console.log('View registrations for event:', eventId);
+        router.push('/Webmaster/RegisteredMembers');
         // TODO: Navigate to registration details
     };
 

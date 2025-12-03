@@ -167,6 +167,11 @@ export default function AdminOverviewScreen() {
           </View>
 
           <View style={styles.gridItem}>
+
+            <TouchableOpacity
+    activeOpacity={0.8}
+    onPress={() => router.push('/Webmaster/PollCreation')} 
+  >
             <CreatePollCard
               title={mockPollStats.title}
               status={mockPollStats.status}
@@ -174,17 +179,28 @@ export default function AdminOverviewScreen() {
               agreePercentage={mockPollStats.agreePercentage}
               disagreePercentage={mockPollStats.disagreePercentage}
             />
+            </TouchableOpacity>
           </View>
 
           <View style={styles.gridItem}>
+            <TouchableOpacity
+    activeOpacity={0.8}
+    onPress={() => router.push('/Webmaster/WMNotifications')} 
+  >
             <YouWereTaggedCard
               postsCount={mockTagNotifications.postsCount}
               messagesCount={mockTagNotifications.messagesCount}
             />
+            </TouchableOpacity>
           </View>
 
           <View style={styles.gridItem}>
+            <TouchableOpacity
+    activeOpacity={0.8}
+    onPress={() => router.push('/Webmaster/WMLeaderboard')} 
+  >
             <LeaderboardCard />
+            </TouchableOpacity>
           </View>
         </View>
 

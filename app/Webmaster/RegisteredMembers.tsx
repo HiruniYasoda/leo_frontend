@@ -61,6 +61,7 @@ export default function RegisteredMembersScreen() {
 
     const handleViewMember = (memberId: string) => {
         console.log('View member details:', memberId);
+        router.push(`/Webmaster/MemberDetail/${memberId}`);
         // TODO: Navigate to member detail screen or show modal
     };
 

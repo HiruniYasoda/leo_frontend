@@ -70,6 +70,7 @@ export default function PollCreationScreen() {
             endTime,
             timeFormat,
         });
+        router.push('/Webmaster/WMConfirmationP');
         // TODO: Implement poll creation logic
     };
 
