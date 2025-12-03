@@ -30,7 +30,7 @@ export default function ConfirmationScreen() {
     const handleContinueShopping = () => {
         console.log('Continue shopping');
         // Navigate back to marketplace/shop
-        router.push('/customScreens/Marketplace');
+        router.push('/Shopping/Marketplace');
     };
 
     return (

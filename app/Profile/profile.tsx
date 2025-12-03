@@ -57,7 +57,7 @@ export default function ProfileScreen() {
     const [showPhotoModal, setShowPhotoModal] = useState(false);
 
     const handleEditPress = () => {
-        router.replace('/Profile/ProfileCustermization');
+      
     };
 
     const handlePhotoAction = (action: 'take' | 'upload' | 'delete') => {

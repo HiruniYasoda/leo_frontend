@@ -67,7 +67,9 @@ export default function SetProfileScreen() {
 
     // --- Handlers (Modified to open modals) ---
     const handleEditProfile = () => {
-        console.log('Edit profile');
+      
+              router.replace('/Profile/ProfileCustermization');
+          
     };
 
     const handleEditEmail = () => {
