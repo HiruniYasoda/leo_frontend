@@ -564,7 +564,7 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { ChevronLeft } from 'lucide-react-native';
-import { supabase } from '@/lib/supabase';
+import { supabase } from '@/app/lib/Supabase';
 import ProfileCard from '@/components/AdminFeatureCard/ProfileCard';
 import PostToFeedCard from '@/components/AdminFeatureCard/PostToFeedCard';
 import LeaderRoleManagementCard from '@/components/AdminFeatureCard/LeaderRoleManagementCard';
