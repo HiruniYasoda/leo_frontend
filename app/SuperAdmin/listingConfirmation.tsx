@@ -26,7 +26,7 @@ export default function WMConfirmationScreen() {
     const handleGoToDashboard = () => {
         console.log('Navigate to admin dashboard');
         // TODO: Navigate to webmaster admin dashboard
-        router.push('/Webmaster/WMAdmin');
+        router.push('/SuperAdmin/Home');
     };
 
     return (
@@ -61,7 +61,7 @@ export default function WMConfirmationScreen() {
 
                 {/* Success Message */}
                 <Text style={styles.successMessage}>
-                  Your poll has been created 
+                  New Product Listed
 {'\n'}successfully!
                 </Text>
 

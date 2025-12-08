@@ -11,6 +11,7 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { ChevronLeft, Upload, X } from 'lucide-react-native';
 import { LinearGradient } from 'expo-linear-gradient';
+import { router } from 'expo-router';
 
 export default function CreateProductListingScreen() {
   const [title, setTitle] = useState('');
@@ -39,6 +40,7 @@ export default function CreateProductListingScreen() {
       stock,
       images,
     });
+    router.replace('/SuperAdmin/listingConfirmation');
   };
 
   return (

@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Image, TextInput 
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { ChevronLeft, Plus, Search } from 'lucide-react-native';
 import { LinearGradient } from 'expo-linear-gradient';
-
+import { router } from 'expo-router';
 interface Product {
   id: string;
   title: string;
@@ -60,7 +60,8 @@ export default function MarketplaceHomeScreen() {
             <ChevronLeft color="#000000" size={24} />
           </TouchableOpacity>
           <Text style={styles.headerTitle}>Marketplace</Text>
-          <TouchableOpacity style={styles.addButton}>
+          <TouchableOpacity style={styles.addButton} activeOpacity={0.8} 
+                    onPress={() => router.push('/SuperAdmin/ProductListing')}>
             <Plus color="#FFD700" size={24} />
           </TouchableOpacity>
         </View>
@@ -80,7 +81,7 @@ export default function MarketplaceHomeScreen() {
         {/* Category Filter */}
         <View style={styles.filterContainer}>
           <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-            {['All', 'Electronics', 'Fashion', 'Books', 'Art'].map((category) => (
+            {['All', 'Badges', 'Accessories', 'Apperal', 'Art'].map((category) => (
               <TouchableOpacity key={category} style={styles.filterChip}>
                 <Text style={styles.filterText}>{category}</Text>
               </TouchableOpacity>

@@ -28,7 +28,7 @@ const logoImage = {
 export default function SuperAdminHomeScreen() {
     const handleNavigate = (screen: string) => {
         console.log('Navigate to:', screen);
-        router.push('/SuperAdmin/RoleManagement');
+        
         // In a real app, you would use router.push(screen)
         // router.push(screen);
     };
@@ -89,12 +89,13 @@ export default function SuperAdminHomeScreen() {
                             <View style={styles.iconContainer}>
                                 <Users color={COLORS.black} size={32} />
                             </View>
-                            <View style={styles.shortcutContent} >
+                            <TouchableOpacity style={styles.shortcutContent} activeOpacity={0.8} 
+                                      onPress={() => router.push('/SuperAdmin/RoleManagement')}>
                                 <Text style={styles.shortcutTitle}>Role Management</Text>
                                 <Text style={styles.shortcutDescription}>
                                     Manage user roles and permissions
                                 </Text>
-                            </View>
+                            </TouchableOpacity>
                             <ChevronRight color={COLORS.black} size={24} />
                         </TouchableOpacity>
                     </LinearGradient>
@@ -111,14 +112,15 @@ export default function SuperAdminHomeScreen() {
                             <View style={[styles.iconContainer, {backgroundColor: 'rgba(255, 255, 255, 0.1)'}]}>
                                 <Trophy color={COLORS.secondaryGold} size={32} />
                             </View>
-                            <View style={styles.shortcutContent}>
+                            <TouchableOpacity style={styles.shortcutContent} activeOpacity={0.8} 
+                                      onPress={() => router.push('/SuperAdmin/LeaderBoard')}>
                                 <Text style={[styles.shortcutTitle, { color: COLORS.white }]}>
                                     Leaderboard
                                 </Text>
                                 <Text style={[styles.shortcutDescription, { color: COLORS.greyText }]}>
                                     View achievements and rankings
                                 </Text>
-                            </View>
+                            </TouchableOpacity>
                             <ChevronRight color={COLORS.white} size={24} />
                         </TouchableOpacity>
                     </LinearGradient>
@@ -135,14 +137,15 @@ export default function SuperAdminHomeScreen() {
                             <View style={[styles.iconContainer, {backgroundColor: 'rgba(255, 255, 255, 0.1)'}]}>
                                 <ShoppingBag color={COLORS.secondaryGold} size={32} />
                             </View>
-                            <View style={styles.shortcutContent}>
+                            <TouchableOpacity style={styles.shortcutContent} activeOpacity={0.8} 
+                                      onPress={() => router.push('/SuperAdmin/MarketPlaceHome')}>
                                 <Text style={[styles.shortcutTitle, { color: COLORS.white }]}>
                                     Marketplace
                                 </Text>
                                 <Text style={[styles.shortcutDescription, { color: COLORS.greyText }]}>
                                     View and manage product listings
                                 </Text>
-                            </View>
+                            </TouchableOpacity>
                             <ChevronRight color={COLORS.white} size={24} />
                         </TouchableOpacity>
                     </LinearGradient>
