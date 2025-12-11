@@ -22,6 +22,7 @@ export default function RootLayout() {
             title: ''  // Explicitly clear the title to remove any default file path display
           }} 
         />
+        <Stack.Screen name="Webmaster" options={{ headerShown: false }} />
         <Stack.Screen name="modal" options={{ presentation: 'modal', title: 'Modal' }} />
       </Stack>
       <StatusBar style="auto" />
